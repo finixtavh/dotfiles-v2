@@ -32,9 +32,9 @@ hl.env("GTK_THEME", "Adwaita:dark")
 ---------------------------------
 hl.config({
     general = {
-        gaps_in  = 4,
-        gaps_out = 8,
-        border_size = 2,
+        gaps_in  = 1,
+        gaps_out = 10,
+        border_size = 1,
         col = {
             active_border   = { colors = {"rgba(89b19eee)", "rgba(33473dee)"}, angle = 45 },
             inactive_border = "rgba(2a2a2a00)",
@@ -51,7 +51,7 @@ hl.config({
         active_opacity   = 0.95,
         inactive_opacity = 0.85,
         dim_inactive = true,
-        dim_strength = 0.05,
+        dim_strength = 0.25,
 
         shadow = {
             enabled      = true,
@@ -66,18 +66,18 @@ hl.config({
             xray      = true,
             size      = 10,
             passes    = 3,
-            brightness = 1.0,
-            noise     = 0.04,
+            brightness = 1.5,
+            noise     = 0.07,
             contrast  = 0.9,
-            vibrancy  = 0.5,
-            vibrancy_darkness = 0.5,
+            vibrancy  = 0.7,
+            vibrancy_darkness = 0.7,
             popups    = false,
         },
     },
 
     dwindle = {
         preserve_split = true,
-        smart_split = false,
+        smart_split = true,
         smart_resizing = false,
     },
 

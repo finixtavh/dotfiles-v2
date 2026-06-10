@@ -449,11 +449,18 @@ function Taskbar() {
 // ============================================================
 //  SYSTEM TRAY  (status area — Steam, Discord, etc.)
 // ============================================================
+const TRAY_HIDDEN = new Set(['nm-applet', 'network-manager-applet', 'blueman', 'blueman-applet'])
+
 function Tray() {
   const tray = AstalTray.get_default()
+  const visibleItems = createBinding(tray, "items").as(
+    (list: AstalTray.TrayItem[]) => list.filter(
+      (item) => !TRAY_HIDDEN.has((item.id ?? '').toLowerCase())
+    )
+  )
   return (
     <box class="tray" spacing={2}>
-      <For each={createBinding(tray, "items")}>
+      <For each={visibleItems}>
         {(item: AstalTray.TrayItem) => (
           <button class="tray-item"
             onClicked={() => { try { item.activate(0, 0) } catch (_) {} }}

@@ -377,6 +377,18 @@ function openFlyoutWin(gdkmonitor: Gdk.Monitor, content: Gtk.Widget): () => void
   flyWin.add(content)
   flyWin.show_all()
 
+  // Explicitly resize the layer-shell surface after GTK has measured content.
+  // Margins on the child widget alone are not reliably reflected in the
+  // Wayland surface size — we must set it on the window directly.
+  GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+    try {
+      const [, natW] = (content as any).get_preferred_width()
+      const margins = (content as any).get_margin_start() + (content as any).get_margin_end()
+      if (natW > 0) flyWin.set_size_request(natW + margins, -1)
+    } catch (_) {}
+    return GLib.SOURCE_REMOVE
+  })
+
   const close = () => {
     if (closed) return
     closed = true
@@ -391,8 +403,8 @@ function openFlyoutWin(gdkmonitor: Gdk.Monitor, content: Gtk.Widget): () => void
 function buildNowPlayingContent(player: AstalMpris.Player): Gtk.Box {
   const root = new Gtk.Box({
     orientation: Gtk.Orientation.VERTICAL, spacing: 12,
-    margin_top: 16, margin_bottom: 16,
-    margin_start: 33, margin_end: 33, visible: true,
+    margin_top: 25, margin_bottom: 16,
+    margin_start: 83, margin_end: 83, visible: true,
   })
   root.get_style_context().add_class('npp-root')
 
@@ -408,15 +420,15 @@ function buildNowPlayingContent(player: AstalMpris.Player): Gtk.Box {
     const path = cover || (artUrl.startsWith('file://') ? decodeURIComponent(artUrl.slice(7)) : '')
     try {
       if (path) {
-        const pb = GdkPixbuf.Pixbuf.new_from_file_at_scale(path, 92, 92, true)
+        const pb = GdkPixbuf.Pixbuf.new_from_file_at_scale(path, 128, 128, true)
         artImg.set_from_pixbuf(pb)
       } else {
         artImg.set_from_icon_name('audio-x-generic-symbolic', Gtk.IconSize.DND)
-        artImg.set_pixel_size(92)
+        artImg.set_pixel_size(128)
       }
     } catch (_) {
       artImg.set_from_icon_name('audio-x-generic-symbolic', Gtk.IconSize.DND)
-      artImg.set_pixel_size(72)
+      artImg.set_pixel_size(128)
     }
   }
   updateArt()
@@ -504,7 +516,7 @@ function buildNowPlayingContent(player: AstalMpris.Player): Gtk.Box {
     return `${m}:${String(ss).padStart(2, '0')}`
   }
 
-  let artDone    = false
+  let lastCover  = ''
   let alive      = true
   let isSeeking  = false
   let curLen     = 0
@@ -524,7 +536,8 @@ function buildNowPlayingContent(player: AstalMpris.Player): Gtk.Box {
       titleLbl.set_label(player.title  ?? '')
       artistLbl.set_label(player.artist ?? '')
 
-      if (!artDone) { artDone = true; updateArt() }
+      const curCover = (player as any).coverArt ?? (player as any).artUrl ?? ''
+      if (curCover !== lastCover) { lastCover = curCover; updateArt() }
 
       const pos = player.position
       const len = player.length
@@ -601,7 +614,7 @@ function LyricsViewer({ player, gdkmonitor }: { player: AstalMpris.Player, gdkmo
     const vbox = new Gtk.Box({
       orientation: Gtk.Orientation.VERTICAL,
       spacing: 6,
-      margin_top: 14, margin_bottom: 14,
+      margin_top: 25, margin_bottom: 14,
       margin_start: 20, margin_end: 20,
     })
     vbox.get_style_context().add_class('lyrics-flyout-root')
@@ -780,9 +793,10 @@ export default function MusicBar(gdkmonitor: Gdk.Monitor) {
       application={app}
     >
       {/* 3-pill layout: spectrum as JSX (AGS guarantees show), left/right via $= */}
-      <box class="music-3pill-root" hexpand spacing={8}>
+      <box class="music-3pill-root" hexpand homogeneous={true}>
 
         {/* LEFT PILL: player info — populated imperatively */}
+        <box hexpand halign={Gtk.Align.START} valign={Gtk.Align.CENTER}>
         <box class="m-left-pill" spacing={8} valign={Gtk.Align.CENTER}
           $={(leftPill: any) => {
             createEffect(() => {
@@ -814,27 +828,24 @@ export default function MusicBar(gdkmonitor: Gdk.Monitor) {
               </button>) as Gtk.Widget
 
               const ctrl = (<MediaControls player={player} />) as Gtk.Widget
-              const prog = (<ProgressBar   player={player} />) as Gtk.Widget
 
               leftPill.add(npBtn)
               leftPill.add(ctrl)
-              leftPill.add(prog)
               leftPill.show_all()
 
               onCleanup(() => {
                 if (closeFlyout) { closeFlyout(); closeFlyout = null }
-                ;[npBtn, ctrl, prog].forEach((w: any) => {
+                ;[npBtn, ctrl].forEach((w: any) => {
                   try { leftPill.remove(w) } catch (_) {}
                 })
               })
             })
           }}
         />
-
-        {/* Equal spacer — pushes center pill toward middle */}
-        <box hexpand />
+        </box>
 
         {/* CENTER PILL: spectrum as JSX children — AGS shows them automatically */}
+        <box hexpand halign={Gtk.Align.CENTER} valign={Gtk.Align.CENTER}>
         <box class="m-center-pill" spacing={2} valign={Gtk.Align.CENTER} halign={Gtk.Align.CENTER}>
           {Array.from({ length: NUM_BARS }, (_, i) => (
             <box class="spec-wrap" orientation={Gtk.Orientation.VERTICAL}
@@ -847,11 +858,10 @@ export default function MusicBar(gdkmonitor: Gdk.Monitor) {
             </box>
           ))}
         </box>
-
-        {/* Equal spacer — symmetric with first spacer */}
-        <box hexpand />
+        </box>
 
         {/* RIGHT PILL: lyrics — populated imperatively */}
+        <box hexpand halign={Gtk.Align.END} valign={Gtk.Align.CENTER}>
         <box class="m-right-pill" spacing={4} valign={Gtk.Align.CENTER}
           $={(rightPill: any) => {
             createEffect(() => {
@@ -868,6 +878,7 @@ export default function MusicBar(gdkmonitor: Gdk.Monitor) {
             })
           }}
         />
+        </box>
 
       </box>
     </window>

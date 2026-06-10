@@ -591,8 +591,8 @@ popover > contents {
 }
 .npp-art {
   border-radius: 10px;
-  min-width:     92px;
-  min-height:    92px;
+  min-width:     128px;
+  min-height:    128px;
   margin:        5px;
 }
 .npp-title {
@@ -891,7 +891,8 @@ window.NotifCenter {
   background:    rgba(5, 5, 5, 0.97);
   border:        1px solid $border-bright;
   border-radius: $radius;
-  min-width:     360px;
+  min-width:     420px;
+  min-height:    750px;
 }
 .notif-panel-title {
   font-size:   14px;

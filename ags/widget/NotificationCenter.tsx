@@ -150,7 +150,7 @@ export default function NotificationCenter(gdkmonitor: Gdk.Monitor) {
       exclusivity={Astal.Exclusivity.IGNORE}
       layer={Astal.Layer.OVERLAY}
       anchor={TOP | RIGHT}
-      marginTop={40}
+      marginTop={60}
       marginRight={8}
       keymode={Astal.Keymode.ON_DEMAND}
       application={app}
@@ -188,15 +188,15 @@ export default function NotificationCenter(gdkmonitor: Gdk.Monitor) {
           // Scroll + list
           const scroll = new Gtk.ScrolledWindow({ visible: true })
           scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-          scroll.set_min_content_height(60)
-          scroll.set_max_content_height(500)
+          scroll.set_min_content_height(750)
+          scroll.set_max_content_height(750)
           self.add(scroll)
 
           const list = new Gtk.Box({
             orientation: Gtk.Orientation.VERTICAL, spacing: 4,
             visible: true,
             margin_start: 10, margin_end: 10,
-            margin_top: 8, margin_bottom: 8,
+            margin_top: 25, margin_bottom: 8,
           })
           scroll.add(list)
 

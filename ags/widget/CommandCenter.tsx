@@ -40,6 +40,13 @@ const ACTIONS = [
     isPower: false,
   },
   {
+    icon:  '󰅇',
+    label: 'Clipboard',
+    desc:  'Clipboard history',
+    cmd:   'bash ~/.config/hypr/scripts/clipboard.sh',
+    isPower: false,
+  },
+  {
     icon:    '󰐥',
     label:   'Power',
     desc:    'Session options',

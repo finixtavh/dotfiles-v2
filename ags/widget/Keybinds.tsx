@@ -2,6 +2,14 @@ import app from "ags/gtk3/app"
 import { Astal, Gtk, Gdk } from "ags/gtk3"
 import GLib from "gi://GLib"
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      [elemName: string]: any
+    }
+  }
+}
+
 interface KB { keys: string; action: string; section: string }
 
 const COMMON: KB[] = [
@@ -142,7 +150,7 @@ function parseKeybinds(): KB[] {
 
 export default function Keybinds() {
   let win: Astal.Window
-  const { CENTER } = Astal.WindowAnchor
+  const CENTER = Astal.WindowAnchor.NONE
   const close = () => { try { win?.set_visible(false) } catch (_) {} }
 
   const allBinds = parseKeybinds()

@@ -11,7 +11,7 @@ N=20
 conf="""[general]
 bars=20
 framerate=144
-sensitivity=175
+sensitivity=200
 autosens=1
 lower_cutoff_freq=25
 higher_cutoff_freq=15000
@@ -27,7 +27,7 @@ bit_format=8bit
 channels=mono
 
 [smoothing]
-noise_reduction=25
+noise_reduction=17
 """
 with tempfile.NamedTemporaryFile(mode='w',suffix='.conf',delete=False) as f:
     f.write(conf); cfg=f.name

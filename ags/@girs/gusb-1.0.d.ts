@@ -1,0 +1,1778 @@
+/// <reference path="./json-1.0.d.ts" />
+/// <reference path="./gio-2.0.d.ts" />
+/// <reference path="./gobject-2.0.d.ts" />
+/// <reference path="./glib-2.0.d.ts" />
+/// <reference path="./gmodule-2.0.d.ts" />
+
+/**
+ * Type Definitions for Gjs (https://gjs.guide/)
+ *
+ * These type definitions are automatically generated, do not edit them by hand.
+ * If you found a bug fix it in `ts-for-gir` or create a bug report on https://github.com/gjsify/ts-for-gir
+ *
+ * The based EJS template file is used for the generated .d.ts file of each GIR module like Gtk-4.0, GObject-2.0, ...
+ */
+
+declare module 'gi://GUsb?version=1.0' {
+
+// Module dependencies
+import type Json from 'gi://Json?version=1.0';
+import type Gio from 'gi://Gio?version=2.0';
+import type GObject from 'gi://GObject?version=2.0';
+import type GLib from 'gi://GLib?version=2.0';
+import type GModule from 'gi://GModule?version=2.0';
+
+export namespace GUsb {
+
+    /**
+     * GUsb-1.0
+     */
+
+
+    /**
+     * @gir-type Enum
+     */
+    enum ContextError {
+        CONTEXT_ERROR_INTERNAL,
+    }
+
+
+    /**
+     * The USB device class.
+     * @gir-type Enum
+     */
+    enum DeviceClassCode {
+        INTERFACE_DESC,
+        AUDIO,
+        COMMUNICATIONS,
+        HID,
+        PHYSICAL,
+        IMAGE,
+        PRINTER,
+        MASS_STORAGE,
+        HUB,
+        CDC_DATA,
+        SMART_CARD,
+        CONTENT_SECURITY,
+        VIDEO,
+        PERSONAL_HEALTHCARE,
+        AUDIO_VIDEO,
+        BILLBOARD,
+        DIAGNOSTIC,
+        WIRELESS_CONTROLLER,
+        MISCELLANEOUS,
+        APPLICATION_SPECIFIC,
+        VENDOR_SPECIFIC,
+    }
+
+
+    /**
+     * The message direction.
+     * @gir-type Enum
+     */
+    enum DeviceDirection {
+        DEVICE_TO_HOST,
+        HOST_TO_DEVICE,
+    }
+
+
+    /**
+     * The error code.
+     * @gir-type Enum
+     */
+    enum DeviceError {
+        /**
+         * Internal error
+         */
+        INTERNAL,
+        /**
+         * IO error
+         */
+        IO,
+        /**
+         * Operation timed out
+         */
+        TIMED_OUT,
+        /**
+         * Operation not supported
+         */
+        NOT_SUPPORTED,
+        /**
+         * No device found
+         */
+        NO_DEVICE,
+        /**
+         * Device is not open
+         */
+        NOT_OPEN,
+        /**
+         * Device is already open
+         */
+        ALREADY_OPEN,
+        /**
+         * Operation was cancelled
+         */
+        CANCELLED,
+        /**
+         * Operation failed
+         */
+        FAILED,
+        /**
+         * Permission denied
+         */
+        PERMISSION_DENIED,
+        /**
+         * Device was busy
+         */
+        BUSY,
+    }
+
+
+    /**
+     * The USB language ID.
+     * @gir-type Enum
+     */
+    enum DeviceLangid {
+        INVALID,
+        ENGLISH_UNITED_STATES,
+    }
+
+
+    /**
+     * The message recipient.
+     * @gir-type Enum
+     */
+    enum DeviceRecipient {
+        DEVICE,
+        INTERFACE,
+        ENDPOINT,
+        OTHER,
+    }
+
+
+    /**
+     * The message request type.
+     * @gir-type Enum
+     */
+    enum DeviceRequestType {
+        STANDARD,
+        CLASS,
+        VENDOR,
+        RESERVED,
+    }
+
+
+    /**
+     * The error code.
+     * @gir-type Struct
+     */
+    class SourceError extends GLib.Error {
+        static $gtype: GObject.GType<GLib.Error>;
+
+        // Static fields
+        static SOURCE_ERROR_INTERNAL: number;
+
+        // Constructors
+        constructor(options: { message: string; code: number });
+    }
+
+
+    /**
+     * The compile-time major version
+     */
+    const MAJOR_VERSION: number;
+
+    /**
+     * The compile-time micro version
+     */
+    const MICRO_VERSION: number;
+
+    /**
+     * The compile-time minor version
+     */
+    const MINOR_VERSION: number;
+
+    /**
+     * @returns Our personal error quark.
+     * @since 0.1.0
+     */
+    function source_error_quark(): GLib.Quark;
+
+    /**
+     * Converts the error code into a string
+     * @param error_code a libusb error code
+     * @returns String, or `null`
+     * @since 0.1.0
+     */
+    function strerror(error_code: number): string;
+
+    /**
+     * Gets the GUsb installed runtime version.
+     * @returns a version number, e.g. "0.3.1"
+     * @since 0.3.1
+     */
+    function version_string(): string;
+
+    /**
+     * The flags to use for the context.
+     * @gir-type Flags
+     */
+    enum ContextFlags {
+        NONE,
+        AUTO_OPEN_DEVICES,
+        SAVE_EVENTS,
+        SAVE_REMOVED_DEVICES,
+        DEBUG,
+    }
+
+
+    /**
+     * Flags for the g_usb_device_claim_interface and
+     * g_usb_device_release_interface methods flags parameters.
+     * @gir-type Flags
+     */
+    enum DeviceClaimInterfaceFlags {
+        NONE,
+        BIND_KERNEL_DRIVER,
+    }
+
+
+    namespace BosDescriptor {
+        // Signal signatures
+        interface SignalSignatures extends GObject.Object.SignalSignatures {}
+
+        // Constructor properties interface
+        interface ConstructorProps extends GObject.Object.ConstructorProps {}
+    }
+
+    /**
+     * @gir-type Class
+     */
+    class BosDescriptor extends GObject.Object {
+        static $gtype: GObject.GType<BosDescriptor>;
+
+        /**
+         * Compile-time signal type information.
+         *
+         * This instance property is generated only for TypeScript type checking.
+         * It is not defined at runtime and should not be accessed in JS code.
+         * @internal
+         */
+        $signals: BosDescriptor.SignalSignatures;
+
+        // Constructors
+        constructor(properties?: Partial<BosDescriptor.ConstructorProps>, ...args: any[]);
+
+        _init(...args: any[]): void;
+
+        // Signals
+        /** @signal */
+        connect<K extends keyof BosDescriptor.SignalSignatures>(signal: K, callback: GObject.SignalCallback<this, BosDescriptor.SignalSignatures[K]>): number;
+        connect(signal: string, callback: (...args: any[]) => any): number;
+
+        /** @signal */
+        connect_after<K extends keyof BosDescriptor.SignalSignatures>(signal: K, callback: GObject.SignalCallback<this, BosDescriptor.SignalSignatures[K]>): number;
+        connect_after(signal: string, callback: (...args: any[]) => any): number;
+
+        /** @signal */
+        emit<K extends keyof BosDescriptor.SignalSignatures>(signal: K, ...args: GObject.GjsParameters<BosDescriptor.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never): void;
+        emit(signal: string, ...args: any[]): void;
+
+        // Methods
+        /**
+         * Gets the BOS descriptor capability.
+         * @returns capability
+         */
+        get_capability(): number;
+
+        /**
+         * Gets any extra data from the BOS descriptor.
+         * @returns a {@link GLib.Bytes}, or `null` for failure
+         */
+        get_extra(): GLib.Bytes;
+    }
+
+
+    namespace Context {
+        // Signal signatures
+        interface SignalSignatures extends GObject.Object.SignalSignatures {
+            /**
+             * This signal is emitted when a USB device is added.
+             * @signal
+             * @run-last
+             */
+            "device-added": (arg0: Device) => void;
+            /**
+             * This signal is emitted when a USB device is changed.
+             * @signal
+             * @run-last
+             */
+            "device-changed": (arg0: Device) => void;
+            /**
+             * This signal is emitted when a USB device is removed.
+             * @signal
+             * @run-last
+             */
+            "device-removed": (arg0: Device) => void;
+            "notify::debug-level": (pspec: GObject.ParamSpec) => void;
+            "notify::libusb-context": (pspec: GObject.ParamSpec) => void;
+        }
+
+        // Constructor properties interface
+        interface ConstructorProps extends GObject.Object.ConstructorProps, Gio.Initable.ConstructorProps {
+            debug_level: number;
+            debugLevel: number;
+            libusb_context: never;
+            libusbContext: never;
+        }
+    }
+
+    /**
+     * @gir-type Class
+     */
+    class Context extends GObject.Object implements Gio.Initable {
+        static $gtype: GObject.GType<Context>;
+
+        // Properties
+        /**
+         * @default 0
+         */
+        get debug_level(): number;
+        set debug_level(val: number);
+
+        /**
+         * @default 0
+         */
+        get debugLevel(): number;
+        set debugLevel(val: number);
+
+        /**
+         * @read-only
+         */
+        get libusb_context(): null;
+
+        /**
+         * @read-only
+         */
+        get libusbContext(): null;
+
+        /**
+         * Compile-time signal type information.
+         *
+         * This instance property is generated only for TypeScript type checking.
+         * It is not defined at runtime and should not be accessed in JS code.
+         * @internal
+         */
+        $signals: Context.SignalSignatures;
+
+        // Constructors
+        constructor(properties?: Partial<Context.ConstructorProps>, ...args: any[]);
+
+        _init(...args: any[]): void;
+
+        static ["new"](): Context;
+
+        // Signals
+        /** @signal */
+        connect<K extends keyof Context.SignalSignatures>(signal: K, callback: GObject.SignalCallback<this, Context.SignalSignatures[K]>): number;
+        connect(signal: string, callback: (...args: any[]) => any): number;
+
+        /** @signal */
+        connect_after<K extends keyof Context.SignalSignatures>(signal: K, callback: GObject.SignalCallback<this, Context.SignalSignatures[K]>): number;
+        connect_after(signal: string, callback: (...args: any[]) => any): number;
+
+        /** @signal */
+        emit<K extends keyof Context.SignalSignatures>(signal: K, ...args: GObject.GjsParameters<Context.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never): void;
+        emit(signal: string, ...args: any[]): void;
+
+        // Static methods
+        static error_quark(): GLib.Quark;
+
+        // Virtual methods
+        /**
+         * @param device 
+         * @virtual
+         */
+        vfunc_device_added(device: Device): void;
+
+        /**
+         * @param device 
+         * @virtual
+         */
+        vfunc_device_changed(device: Device): void;
+
+        /**
+         * @param device 
+         * @virtual
+         */
+        vfunc_device_removed(device: Device): void;
+
+        // Methods
+        /**
+         * Enumerates all the USB devices and adds them to the context.
+         * 
+         * You only need to call this function once, and any subsequent calls
+         * are silently ignored.
+         */
+        enumerate(): void;
+
+        /**
+         * Finds a device based on its bus and address values.
+         * @param bus a bus number
+         * @param address a bus address
+         * @returns a new {@link GUsb.Device}, or `null` if not found.
+         */
+        find_by_bus_address(bus: number, address: number): Device;
+
+        /**
+         * Finds a device based on its platform id value.
+         * @param platform_id a platform id, e.g. "usb:00:03:03:02"
+         * @returns a new {@link GUsb.Device}, or `null` if not found.
+         */
+        find_by_platform_id(platform_id: string): Device;
+
+        /**
+         * Finds a device based on its bus and address values.
+         * @param vid a vendor ID
+         * @param pid a product ID
+         * @returns a new {@link GUsb.Device}, or `null` if not found.
+         */
+        find_by_vid_pid(vid: number, pid: number): Device;
+
+        /**
+         * @returns a new {@link GLib.PtrArray} of {@link GUsb.Device}'s.
+         */
+        get_devices(): Device[];
+
+        /**
+         * Sets the flags to use for the context.
+         * @returns the {@link GUsb.ContextFlags}, e.g. {@link GUsb.ContextFlags.AUTO_OPEN_DEVICES}
+         */
+        get_flags(): ContextFlags;
+
+        /**
+         * Gets the poll interval for platforms like Windows that do not support `LIBUSB_CAP_HAS_HOTPLUG`.
+         * @returns interval in ms
+         */
+        get_hotplug_poll_interval(): number;
+
+        /**
+         * Gets the internal GMainContext to use for synchronous methods.
+         * By default the value is set to the value of `g_main_context_default()`
+         * @returns the {@link GLib.MainContext}
+         */
+        get_main_context(): GLib.MainContext;
+
+        /**
+         * This function does nothing.
+         * @param main_ctx a {@link GLib.MainContext}, or `null`
+         * @returns the {@link GUsb.Source}.
+         */
+        get_source(main_ctx: GLib.MainContext): Source;
+
+        /**
+         * Loads the context from a JSON object.
+         * @param json_object a {@link Json.Object}
+         * @returns `true` on success
+         */
+        load(json_object: Json.Object): boolean;
+
+        /**
+         * Loads any devices with a specified tag into the context from a JSON object.
+         * @param json_object a {@link Json.Object}
+         * @param tag a string tag, e.g. `runtime-reload`, or `null`
+         * @returns `true` on success
+         */
+        load_with_tag(json_object: Json.Object, tag: string): boolean;
+
+        /**
+         * Saves the context to an existing JSON builder.
+         * @param json_builder a {@link Json.Builder}
+         * @returns `true` on success
+         */
+        save(json_builder: Json.Builder): boolean;
+
+        /**
+         * Saves any devices with a specified tag into an existing JSON builder.
+         * @param json_builder a {@link Json.Builder}
+         * @param tag a string tag, e.g. `runtime-reload`, or `null`
+         * @returns `true` on success
+         */
+        save_with_tag(json_builder: Json.Builder, tag: string): boolean;
+
+        /**
+         * Sets the debug flags which control what is logged to the console.
+         * 
+         * Using {@link GLib.LogLevelFlags.LEVEL_INFO} will output to standard out, and everything
+         * else logs to standard error.
+         * @param flags a GLogLevelFlags such as {@link GLib.LogLevelFlags.LEVEL_ERROR} | {@link GLib.LogLevelFlags.LEVEL_INFO}, or 0
+         */
+        set_debug(flags: GLib.LogLevelFlags): void;
+
+        /**
+         * Sets the flags to use for the context. These should be set before
+         * `g_usb_context_enumerate()` is called.
+         * @param flags some {@link GUsb.ContextFlags}, e.g. {@link GUsb.ContextFlags.AUTO_OPEN_DEVICES}
+         */
+        set_flags(flags: ContextFlags): void;
+
+        /**
+         * Sets the poll interval for platforms like Windows that do not support `LIBUSB_CAP_HAS_HOTPLUG`.
+         * This defaults to 1000ms and can be changed before or after `g_usb_context_enumerate()` has been
+         * called.
+         * @param hotplug_poll_interval the interval in ms
+         */
+        set_hotplug_poll_interval(hotplug_poll_interval: number): void;
+
+        /**
+         * Sets the internal GMainContext to use for synchronous methods.
+         * @param main_ctx 
+         */
+        set_main_context(main_ctx: GLib.MainContext): void;
+
+        /**
+         * Waits for the device to be replugged.
+         * It may come back with a different VID:PID.
+         * 
+         * Warning: This is synchronous and blocks until the device comes
+         * back or the timeout triggers.
+         * @param device a {@link GUsb.Device}
+         * @param timeout_ms timeout to wait
+         * @returns a new {@link GUsb.Device}, or `null` for invalid
+         */
+        wait_for_replug(device: Device, timeout_ms: number): Device;
+
+        /**
+         * Initializes the object implementing the interface.
+         * 
+         * This method is intended for language bindings. If writing in C,
+         * `g_initable_new()` should typically be used instead.
+         * 
+         * The object must be initialized before any real use after initial
+         * construction, either with this function or `g_async_initable_init_async()`.
+         * 
+         * Implementations may also support cancellation. If `cancellable` is not `null`,
+         * then initialization can be cancelled by triggering the cancellable object
+         * from another thread. If the operation was cancelled, the error
+         * {@link Gio.IOErrorEnum.CANCELLED} will be returned. If `cancellable` is not `null` and
+         * the object doesn't support cancellable initialization the error
+         * {@link Gio.IOErrorEnum.NOT_SUPPORTED} will be returned.
+         * 
+         * If the object is not initialized, or initialization returns with an
+         * error, then all operations on the object except `g_object_ref()` and
+         * `g_object_unref()` are considered to be invalid, and have undefined
+         * behaviour. See the [description][iface@Gio.Initable#description] for more details.
+         * 
+         * Callers should not assume that a class which implements {@link Gio.Initable} can be
+         * initialized multiple times, unless the class explicitly documents itself as
+         * supporting this. Generally, a class’ implementation of `init()` can assume
+         * (and assert) that it will only be called once. Previously, this documentation
+         * recommended all {@link Gio.Initable} implementations should be idempotent; that
+         * recommendation was relaxed in GLib 2.54.
+         * 
+         * If a class explicitly supports being initialized multiple times, it is
+         * recommended that the method is idempotent: multiple calls with the same
+         * arguments should return the same results. Only the first call initializes
+         * the object; further calls return the result of the first call.
+         * 
+         * One reason why a class might need to support idempotent initialization is if
+         * it is designed to be used via the singleton pattern, with a
+         * {@link GObject.ObjectClass}.constructor that sometimes returns an existing instance.
+         * In this pattern, a caller would expect to be able to call `g_initable_init()`
+         * on the result of `g_object_new()`, regardless of whether it is in fact a new
+         * instance.
+         * @param cancellable optional {@link Gio.Cancellable} object, `null` to ignore.
+         * @returns `true` if successful. If an error has occurred, this function will     return `false` and set `error` appropriately if present.
+         */
+        init(cancellable: Gio.Cancellable | null): boolean;
+
+        /**
+         * Initializes the object implementing the interface.
+         * 
+         * This method is intended for language bindings. If writing in C,
+         * `g_initable_new()` should typically be used instead.
+         * 
+         * The object must be initialized before any real use after initial
+         * construction, either with this function or `g_async_initable_init_async()`.
+         * 
+         * Implementations may also support cancellation. If `cancellable` is not `null`,
+         * then initialization can be cancelled by triggering the cancellable object
+         * from another thread. If the operation was cancelled, the error
+         * {@link Gio.IOErrorEnum.CANCELLED} will be returned. If `cancellable` is not `null` and
+         * the object doesn't support cancellable initialization the error
+         * {@link Gio.IOErrorEnum.NOT_SUPPORTED} will be returned.
+         * 
+         * If the object is not initialized, or initialization returns with an
+         * error, then all operations on the object except `g_object_ref()` and
+         * `g_object_unref()` are considered to be invalid, and have undefined
+         * behaviour. See the [description][iface@Gio.Initable#description] for more details.
+         * 
+         * Callers should not assume that a class which implements {@link Gio.Initable} can be
+         * initialized multiple times, unless the class explicitly documents itself as
+         * supporting this. Generally, a class’ implementation of `init()` can assume
+         * (and assert) that it will only be called once. Previously, this documentation
+         * recommended all {@link Gio.Initable} implementations should be idempotent; that
+         * recommendation was relaxed in GLib 2.54.
+         * 
+         * If a class explicitly supports being initialized multiple times, it is
+         * recommended that the method is idempotent: multiple calls with the same
+         * arguments should return the same results. Only the first call initializes
+         * the object; further calls return the result of the first call.
+         * 
+         * One reason why a class might need to support idempotent initialization is if
+         * it is designed to be used via the singleton pattern, with a
+         * {@link GObject.ObjectClass}.constructor that sometimes returns an existing instance.
+         * In this pattern, a caller would expect to be able to call `g_initable_init()`
+         * on the result of `g_object_new()`, regardless of whether it is in fact a new
+         * instance.
+         * @param cancellable optional {@link Gio.Cancellable} object, `null` to ignore.
+         * @virtual
+         */
+        vfunc_init(cancellable: Gio.Cancellable | null): boolean;
+    }
+
+
+    namespace Device {
+        // Signal signatures
+        interface SignalSignatures extends GObject.Object.SignalSignatures {
+            "notify::context": (pspec: GObject.ParamSpec) => void;
+            "notify::libusb-device": (pspec: GObject.ParamSpec) => void;
+            "notify::platform-id": (pspec: GObject.ParamSpec) => void;
+        }
+
+        // Constructor properties interface
+        interface ConstructorProps extends GObject.Object.ConstructorProps, Gio.Initable.ConstructorProps {
+            context: Context;
+            libusb_device: never;
+            libusbDevice: never;
+            platform_id: string;
+            platformId: string;
+        }
+    }
+
+    /**
+     * @gir-type Class
+     */
+    class Device extends GObject.Object implements Gio.Initable {
+        static $gtype: GObject.GType<Device>;
+
+        // Properties
+        /**
+         * @construct-only
+         */
+        set context(val: Context);
+
+        /**
+         * @construct-only
+         */
+        get libusb_device(): null;
+
+        /**
+         * @construct-only
+         */
+        get libusbDevice(): null;
+
+        /**
+         * @construct-only
+         * @default null
+         */
+        set platform_id(val: string);
+
+        /**
+         * @construct-only
+         * @default null
+         */
+        set platformId(val: string);
+
+        /**
+         * Compile-time signal type information.
+         *
+         * This instance property is generated only for TypeScript type checking.
+         * It is not defined at runtime and should not be accessed in JS code.
+         * @internal
+         */
+        $signals: Device.SignalSignatures;
+
+        // Constructors
+        constructor(properties?: Partial<Device.ConstructorProps>, ...args: any[]);
+
+        _init(...args: any[]): void;
+
+        // Signals
+        /** @signal */
+        connect<K extends keyof Device.SignalSignatures>(signal: K, callback: GObject.SignalCallback<this, Device.SignalSignatures[K]>): number;
+        connect(signal: string, callback: (...args: any[]) => any): number;
+
+        /** @signal */
+        connect_after<K extends keyof Device.SignalSignatures>(signal: K, callback: GObject.SignalCallback<this, Device.SignalSignatures[K]>): number;
+        connect_after(signal: string, callback: (...args: any[]) => any): number;
+
+        /** @signal */
+        emit<K extends keyof Device.SignalSignatures>(signal: K, ...args: GObject.GjsParameters<Device.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never): void;
+        emit(signal: string, ...args: any[]): void;
+
+        // Static methods
+        static error_quark(): GLib.Quark;
+
+        // Methods
+        /**
+         * Adds a tag, which is included in the JSON log to identify the specific device.
+         * 
+         * For instance, there might be a pre-update runtime, a bootloader and a post-update runtime
+         * and allowing tags to be saved to the backend object allows us to identify each version of
+         * the same physical device.
+         * @param tag a tag, for example `bootloader` or `runtime-reload`
+         */
+        add_tag(tag: string): void;
+
+        /**
+         * Perform a USB bulk transfer.
+         * 
+         * Warning: this function is synchronous, and cannot be cancelled.
+         * @param endpoint the address of a valid endpoint to communicate with
+         * @param data a suitably-sized data buffer for either input or output
+         * @param timeout timeout timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use 0.
+         * @param cancellable a {@link Gio.Cancellable}, or `null`
+         * @returns `true` on success
+         */
+        bulk_transfer(endpoint: number, data: Uint8Array | string, timeout: number, cancellable: Gio.Cancellable | null): [boolean, number];
+
+        /**
+         * Do an async bulk transfer
+         * @param endpoint the address of a valid endpoint to communicate with
+         * @param data a suitably-sized data buffer for either input or output
+         * @param timeout timeout timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use 0.
+         * @param cancellable a {@link Gio.Cancellable}, or `null`
+         */
+        bulk_transfer_async(endpoint: number, data: Uint8Array | string, timeout: number, cancellable: Gio.Cancellable | null): globalThis.Promise<number>;
+
+        /**
+         * Do an async bulk transfer
+         * @param endpoint the address of a valid endpoint to communicate with
+         * @param data a suitably-sized data buffer for either input or output
+         * @param timeout timeout timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use 0.
+         * @param cancellable a {@link Gio.Cancellable}, or `null`
+         * @param callback the function to run on completion
+         */
+        bulk_transfer_async(endpoint: number, data: Uint8Array | string, timeout: number, cancellable: Gio.Cancellable | null, callback: Gio.AsyncReadyCallback<this> | null): void;
+
+        /**
+         * Do an async bulk transfer
+         * @param endpoint the address of a valid endpoint to communicate with
+         * @param data a suitably-sized data buffer for either input or output
+         * @param timeout timeout timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use 0.
+         * @param cancellable a {@link Gio.Cancellable}, or `null`
+         * @param callback the function to run on completion
+         */
+        bulk_transfer_async(endpoint: number, data: Uint8Array | string, timeout: number, cancellable: Gio.Cancellable | null, callback?: Gio.AsyncReadyCallback<this> | null): globalThis.Promise<number> | void;
+
+        /**
+         * Gets the result from the asynchronous function.
+         * @param res the {@link Gio.AsyncResult}
+         * @returns the actual number of bytes sent, or -1 on error.
+         */
+        bulk_transfer_finish(res: Gio.AsyncResult): number;
+
+        /**
+         * Claim an interface of the device.
+         * @param iface bInterfaceNumber of the interface you wish to claim
+         * @param flags {@link GUsb.DeviceClaimInterfaceFlags}
+         * @returns `true` on success
+         */
+        claim_interface(iface: number, flags: DeviceClaimInterfaceFlags): boolean;
+
+        /**
+         * Clear all the events saved by the device.
+         */
+        clear_events(): void;
+
+        /**
+         * Closes the device when it is no longer required.
+         * @returns `true` on success
+         */
+        close(): boolean;
+
+        /**
+         * Perform a USB control transfer.
+         * 
+         * Warning: this function is synchronous, and cannot be cancelled.
+         * @param direction 
+         * @param request_type the request type field for the setup packet
+         * @param recipient 
+         * @param request the request field for the setup packet
+         * @param value the value field for the setup packet
+         * @param idx the index field for the setup packet
+         * @param data a suitably-sized data buffer for either input or output
+         * @param timeout timeout timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use 0.
+         * @param cancellable a {@link Gio.Cancellable}, or `null`
+         * @returns `true` on success
+         */
+        control_transfer(direction: DeviceDirection, request_type: DeviceRequestType, recipient: DeviceRecipient, request: number, value: number, idx: number, data: Uint8Array | string, timeout: number, cancellable: Gio.Cancellable | null): [boolean, number];
+
+        /**
+         * Do an async control transfer
+         * @param direction 
+         * @param request_type 
+         * @param recipient 
+         * @param request 
+         * @param value 
+         * @param idx 
+         * @param data a suitably-sized data buffer for either input or output
+         * @param timeout timeout timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use 0.
+         * @param cancellable a {@link Gio.Cancellable}, or `null`
+         */
+        control_transfer_async(direction: DeviceDirection, request_type: DeviceRequestType, recipient: DeviceRecipient, request: number, value: number, idx: number, data: Uint8Array | string, timeout: number, cancellable: Gio.Cancellable | null): globalThis.Promise<number>;
+
+        /**
+         * Do an async control transfer
+         * @param direction 
+         * @param request_type 
+         * @param recipient 
+         * @param request 
+         * @param value 
+         * @param idx 
+         * @param data a suitably-sized data buffer for either input or output
+         * @param timeout timeout timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use 0.
+         * @param cancellable a {@link Gio.Cancellable}, or `null`
+         * @param callback the function to run on completion
+         */
+        control_transfer_async(direction: DeviceDirection, request_type: DeviceRequestType, recipient: DeviceRecipient, request: number, value: number, idx: number, data: Uint8Array | string, timeout: number, cancellable: Gio.Cancellable | null, callback: Gio.AsyncReadyCallback<this> | null): void;
+
+        /**
+         * Do an async control transfer
+         * @param direction 
+         * @param request_type 
+         * @param recipient 
+         * @param request 
+         * @param value 
+         * @param idx 
+         * @param data a suitably-sized data buffer for either input or output
+         * @param timeout timeout timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use 0.
+         * @param cancellable a {@link Gio.Cancellable}, or `null`
+         * @param callback the function to run on completion
+         */
+        control_transfer_async(direction: DeviceDirection, request_type: DeviceRequestType, recipient: DeviceRecipient, request: number, value: number, idx: number, data: Uint8Array | string, timeout: number, cancellable: Gio.Cancellable | null, callback?: Gio.AsyncReadyCallback<this> | null): globalThis.Promise<number> | void;
+
+        /**
+         * Gets the result from the asynchronous function.
+         * @param res the {@link Gio.AsyncResult}
+         * @returns the actual number of bytes sent, or -1 on error.
+         */
+        control_transfer_finish(res: Gio.AsyncResult): number;
+
+        /**
+         * Gets the USB address for the device.
+         * @returns The 8-bit address
+         */
+        get_address(): number;
+
+        /**
+         * Gets the first bos_descriptor that matches the descriptor capability.
+         * If you want to find all the BOS descriptors that match (there may be other matching BOS
+         * descriptors you have to use `g_usb_device_get_bos_descriptors()` and check each one manually.
+         * @param capability a BOS capability type
+         * @returns a {@link GUsb.BosDescriptor} or `null` for not found
+         */
+        get_bos_descriptor(capability: number): BosDescriptor;
+
+        /**
+         * Gets all the BOS descriptors exported by the device.
+         * 
+         * The first time this method is used the hardware is queried and then after that cached results
+         * are returned. To invalidate the caches use `g_usb_device_invalidate()`.
+         * @returns an array of BOS descriptors
+         */
+        get_bos_descriptors(): BosDescriptor[];
+
+        /**
+         * Gets the USB bus number for the device.
+         * @returns The 8-bit bus number
+         */
+        get_bus(): number;
+
+        /**
+         * Gets the device children if any exist.
+         * @returns an array of {@link GUsb.Device}
+         */
+        get_children(): Device[];
+
+        /**
+         * Get the bConfigurationValue for the active configuration of the device.
+         * 
+         * Warning: this function is synchronous.
+         * @returns The bConfigurationValue of the active config, or -1 on error
+         */
+        get_configuration(): number;
+
+        /**
+         * Get the index for the active Configuration string descriptor
+         * ie, iConfiguration.
+         * @returns a string descriptor index.
+         */
+        get_configuration_index(): number;
+
+        /**
+         * Gets the date and time that the {@link GUsb.Device} was created.
+         * 
+         * This can be used as an indicator if the device replugged, as the vendor and product IDs may not
+         * change for some devices. Use `g_date_time_equal()` to verify equality.
+         * @returns a {@link GLib.DateTime}
+         */
+        get_created(): GLib.DateTime;
+
+        /**
+         * Gets the string index from the vendor class interface descriptor.
+         * @param class_id a device class, e.g. 0xff for VENDOR
+         * @param subclass_id a device subclass
+         * @param protocol_id a protocol number
+         * @returns a non-zero index, or 0x00 for failure
+         */
+        get_custom_index(class_id: number, subclass_id: number, protocol_id: number): number;
+
+        /**
+         * Gets the device class, typically a {@link GUsb.DeviceClassCode}.
+         * @returns a device class number, e.g. 0x09 is a USB hub.
+         */
+        get_device_class(): number;
+
+        /**
+         * Gets the device protocol qualified by the class and subclass numbers.
+         * See `g_usb_device_get_device_class()` and `g_usb_device_get_device_subclass()`.
+         * @returns a device protocol number.
+         */
+        get_device_protocol(): number;
+
+        /**
+         * Gets the device subclass qualified by the class number.
+         * See `g_usb_device_get_device_class()`.
+         * @returns a device subclass number.
+         */
+        get_device_subclass(): number;
+
+        /**
+         * Gets all the events saved by the device.
+         * 
+         * Events are only collected when the `G_USB_CONTEXT_FLAGS_SAVE_EVENTS` flag is used before
+         * enumerating the context. Events can be used to replay device transactions.
+         * @returns an array of events
+         */
+        get_events(): DeviceEvent[];
+
+        /**
+         * Gets the default HID descriptors exported by the device.
+         * 
+         * If more than one interface exports a HID descriptor, use `g_usb_device_get_hid_descriptors()`
+         * instead.
+         * @returns a HID descriptor, or `null`
+         */
+        get_hid_descriptor_default(): GLib.Bytes;
+
+        /**
+         * Gets all the HID descriptors exported by the device.
+         * 
+         * The first time this method is used the hardware is queried and then after that cached results
+         * are returned. To invalidate the caches use `g_usb_device_invalidate()`.
+         * @returns an array of HID descriptors
+         */
+        get_hid_descriptors(): GLib.Bytes[];
+
+        /**
+         * Gets the first interface that matches the vendor class interface descriptor.
+         * If you want to find all the interfaces that match (there may be other
+         * 'alternate' interfaces you have to use `g_usb_device_get_interfaces()` and
+         * check each one manally.
+         * @param class_id a device class, e.g. 0xff for VENDOR
+         * @param subclass_id a device subclass
+         * @param protocol_id a protocol number
+         * @returns a {@link GUsb.Interface} or `null` for not found
+         */
+        get_interface(class_id: number, subclass_id: number, protocol_id: number): Interface;
+
+        /**
+         * Gets all the interfaces exported by the device.
+         * 
+         * The first time this method is used the hardware is queried and then after that cached results
+         * are returned. To invalidate the caches use `g_usb_device_invalidate()`.
+         * @returns an array of interfaces or `null` for error
+         */
+        get_interfaces(): Interface[];
+
+        /**
+         * Gets the index for the Manufacturer string descriptor.
+         * @returns a string descriptor index.
+         */
+        get_manufacturer_index(): number;
+
+        /**
+         * Gets the device parent if one exists.
+         * @returns {@link GUsb.Device} or `null`
+         */
+        get_parent(): Device;
+
+        /**
+         * Gets the product ID for the device.
+         * @returns an ID.
+         */
+        get_pid(): number;
+
+        /**
+         * Gets the product ID for the device as a string.
+         * @returns an string ID, or `null` if not available.
+         */
+        get_pid_as_str(): string;
+
+        /**
+         * Gets the platform identifier for the device.
+         * 
+         * When the device is removed and then replugged, this value is not expected to
+         * be different.
+         * @returns The platform ID, e.g. "usb:02:00:03:01"
+         */
+        get_platform_id(): string;
+
+        /**
+         * Gets the USB port number for the device.
+         * @returns The 8-bit port number
+         */
+        get_port_number(): number;
+
+        /**
+         * Gets the index for the Product string descriptor.
+         * @returns a string descriptor index.
+         */
+        get_product_index(): number;
+
+        /**
+         * Gets the BCD firmware version number for the device.
+         * @returns a version number in BCD format.
+         */
+        get_release(): number;
+
+        /**
+         * Gets the index for the Serial Number string descriptor.
+         * @returns a string descriptor index.
+         */
+        get_serial_number_index(): number;
+
+        /**
+         * Gets the BCD specification revision for the device. For example,
+         * `0x0110` indicates USB 1.1 and 0x0320 indicates USB 3.2
+         * @returns a specification revision in BCD format.
+         */
+        get_spec(): number;
+
+        /**
+         * Get a string descriptor from the device. The returned string should be freed
+         * with `g_free()` when no longer needed.
+         * @param desc_index the index for the string descriptor to retrieve
+         * @returns a newly-allocated string holding the descriptor, or NULL on error.
+         */
+        get_string_descriptor(desc_index: number): string;
+
+        /**
+         * Get a raw string descriptor from the device. The returned string should be freed
+         * with `g_bytes_unref()` when no longer needed.
+         * The descriptor will be at most 128 btes in length, if you need to
+         * issue a request with either a smaller or larger descriptor, you can
+         * use g_usb_device_get_string_descriptor_bytes_full instead.
+         * @param desc_index the index for the string descriptor to retrieve
+         * @param langid the language ID
+         * @returns a possibly UTF-16 string, or NULL on error.
+         */
+        get_string_descriptor_bytes(desc_index: number, langid: number): GLib.Bytes;
+
+        /**
+         * Get a raw string descriptor from the device. The returned string should be freed
+         * with `g_bytes_unref()` when no longer needed.
+         * @param desc_index the index for the string descriptor to retrieve
+         * @param langid the language ID
+         * @param length size of the request data buffer
+         * @returns a possibly UTF-16 string, or NULL on error.
+         */
+        get_string_descriptor_bytes_full(desc_index: number, langid: number, length: bigint | number): GLib.Bytes;
+
+        /**
+         * Gets all the tags.
+         * @returns string tags
+         */
+        get_tags(): string[];
+
+        /**
+         * Gets the vendor ID for the device.
+         * @returns an ID.
+         */
+        get_vid(): number;
+
+        /**
+         * Gets the vendor ID for the device as a string.
+         * @returns an string ID, or `null` if not available.
+         */
+        get_vid_as_str(): string;
+
+        /**
+         * Checks if a tag has been used to identify the specific device.
+         * @param tag a tag, for example `bootloader` or `runtime-reload`
+         * @returns `true` on success
+         */
+        has_tag(tag: string): boolean;
+
+        /**
+         * Perform a USB interrupt transfer.
+         * 
+         * Warning: this function is synchronous, and cannot be cancelled.
+         * @param endpoint the address of a valid endpoint to communicate with
+         * @param data a suitably-sized data buffer for either input or output
+         * @param timeout timeout timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use 0.
+         * @param cancellable a {@link Gio.Cancellable}, or `null`
+         * @returns `true` on success
+         */
+        interrupt_transfer(endpoint: number, data: Uint8Array | string, timeout: number, cancellable: Gio.Cancellable | null): [boolean, number];
+
+        /**
+         * Do an async interrupt transfer
+         * @param endpoint the address of a valid endpoint to communicate with
+         * @param data a suitably-sized data buffer for either input or output
+         * @param timeout timeout timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use 0.
+         * @param cancellable a {@link Gio.Cancellable}, or `null`
+         */
+        interrupt_transfer_async(endpoint: number, data: Uint8Array | string, timeout: number, cancellable: Gio.Cancellable | null): globalThis.Promise<number>;
+
+        /**
+         * Do an async interrupt transfer
+         * @param endpoint the address of a valid endpoint to communicate with
+         * @param data a suitably-sized data buffer for either input or output
+         * @param timeout timeout timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use 0.
+         * @param cancellable a {@link Gio.Cancellable}, or `null`
+         * @param callback the function to run on completion
+         */
+        interrupt_transfer_async(endpoint: number, data: Uint8Array | string, timeout: number, cancellable: Gio.Cancellable | null, callback: Gio.AsyncReadyCallback<this> | null): void;
+
+        /**
+         * Do an async interrupt transfer
+         * @param endpoint the address of a valid endpoint to communicate with
+         * @param data a suitably-sized data buffer for either input or output
+         * @param timeout timeout timeout (in milliseconds) that this function should wait before giving up due to no response being received. For an unlimited timeout, use 0.
+         * @param cancellable a {@link Gio.Cancellable}, or `null`
+         * @param callback the function to run on completion
+         */
+        interrupt_transfer_async(endpoint: number, data: Uint8Array | string, timeout: number, cancellable: Gio.Cancellable | null, callback?: Gio.AsyncReadyCallback<this> | null): globalThis.Promise<number> | void;
+
+        /**
+         * Gets the result from the asynchronous function.
+         * @param res the {@link Gio.AsyncResult}
+         * @returns the actual number of bytes sent, or -1 on error.
+         */
+        interrupt_transfer_finish(res: Gio.AsyncResult): number;
+
+        /**
+         * Invalidates the caches used in `g_usb_device_get_interfaces()`.
+         */
+        invalidate(): void;
+
+        /**
+         * Gets if the device is emulated.
+         * @returns `true` if the device is emulated and not backed by a physical device.
+         */
+        is_emulated(): boolean;
+
+        /**
+         * Opens the device for use.
+         * 
+         * Warning: this function is synchronous.
+         * @returns `true` on success
+         */
+        open(): boolean;
+
+        /**
+         * Release an interface of the device.
+         * @param iface bInterfaceNumber of the interface you wish to release
+         * @param flags {@link GUsb.DeviceClaimInterfaceFlags}
+         * @returns `true` on success
+         */
+        release_interface(iface: number, flags: DeviceClaimInterfaceFlags): boolean;
+
+        /**
+         * Removes a tag, which is included in the JSON log to identify the specific device.
+         * @param tag a tag, for example `bootloader` or `runtime-reload`
+         */
+        remove_tag(tag: string): void;
+
+        /**
+         * Perform a USB port reset to reinitialize a device.
+         * 
+         * If the reset succeeds, the device will appear to disconnected and reconnected.
+         * This means the `self` will no longer be valid and should be closed and
+         * rediscovered.
+         * 
+         * This is a blocking function which usually incurs a noticeable delay.
+         * @returns `true` on success
+         */
+        reset(): boolean;
+
+        /**
+         * Set the active bConfigurationValue for the device.
+         * 
+         * Warning: this function is synchronous.
+         * @param configuration the configuration value to set
+         * @returns `true` on success
+         */
+        set_configuration(configuration: number): boolean;
+
+        /**
+         * Sets an alternate setting on an interface.
+         * @param iface bInterfaceNumber of the interface you wish to release
+         * @param alt alternative setting number
+         * @returns `true` on success
+         */
+        set_interface_alt(iface: number, alt: number): boolean;
+
+        /**
+         * Initializes the object implementing the interface.
+         * 
+         * This method is intended for language bindings. If writing in C,
+         * `g_initable_new()` should typically be used instead.
+         * 
+         * The object must be initialized before any real use after initial
+         * construction, either with this function or `g_async_initable_init_async()`.
+         * 
+         * Implementations may also support cancellation. If `cancellable` is not `null`,
+         * then initialization can be cancelled by triggering the cancellable object
+         * from another thread. If the operation was cancelled, the error
+         * {@link Gio.IOErrorEnum.CANCELLED} will be returned. If `cancellable` is not `null` and
+         * the object doesn't support cancellable initialization the error
+         * {@link Gio.IOErrorEnum.NOT_SUPPORTED} will be returned.
+         * 
+         * If the object is not initialized, or initialization returns with an
+         * error, then all operations on the object except `g_object_ref()` and
+         * `g_object_unref()` are considered to be invalid, and have undefined
+         * behaviour. See the [description][iface@Gio.Initable#description] for more details.
+         * 
+         * Callers should not assume that a class which implements {@link Gio.Initable} can be
+         * initialized multiple times, unless the class explicitly documents itself as
+         * supporting this. Generally, a class’ implementation of `init()` can assume
+         * (and assert) that it will only be called once. Previously, this documentation
+         * recommended all {@link Gio.Initable} implementations should be idempotent; that
+         * recommendation was relaxed in GLib 2.54.
+         * 
+         * If a class explicitly supports being initialized multiple times, it is
+         * recommended that the method is idempotent: multiple calls with the same
+         * arguments should return the same results. Only the first call initializes
+         * the object; further calls return the result of the first call.
+         * 
+         * One reason why a class might need to support idempotent initialization is if
+         * it is designed to be used via the singleton pattern, with a
+         * {@link GObject.ObjectClass}.constructor that sometimes returns an existing instance.
+         * In this pattern, a caller would expect to be able to call `g_initable_init()`
+         * on the result of `g_object_new()`, regardless of whether it is in fact a new
+         * instance.
+         * @param cancellable optional {@link Gio.Cancellable} object, `null` to ignore.
+         * @returns `true` if successful. If an error has occurred, this function will     return `false` and set `error` appropriately if present.
+         */
+        init(cancellable: Gio.Cancellable | null): boolean;
+
+        /**
+         * Initializes the object implementing the interface.
+         * 
+         * This method is intended for language bindings. If writing in C,
+         * `g_initable_new()` should typically be used instead.
+         * 
+         * The object must be initialized before any real use after initial
+         * construction, either with this function or `g_async_initable_init_async()`.
+         * 
+         * Implementations may also support cancellation. If `cancellable` is not `null`,
+         * then initialization can be cancelled by triggering the cancellable object
+         * from another thread. If the operation was cancelled, the error
+         * {@link Gio.IOErrorEnum.CANCELLED} will be returned. If `cancellable` is not `null` and
+         * the object doesn't support cancellable initialization the error
+         * {@link Gio.IOErrorEnum.NOT_SUPPORTED} will be returned.
+         * 
+         * If the object is not initialized, or initialization returns with an
+         * error, then all operations on the object except `g_object_ref()` and
+         * `g_object_unref()` are considered to be invalid, and have undefined
+         * behaviour. See the [description][iface@Gio.Initable#description] for more details.
+         * 
+         * Callers should not assume that a class which implements {@link Gio.Initable} can be
+         * initialized multiple times, unless the class explicitly documents itself as
+         * supporting this. Generally, a class’ implementation of `init()` can assume
+         * (and assert) that it will only be called once. Previously, this documentation
+         * recommended all {@link Gio.Initable} implementations should be idempotent; that
+         * recommendation was relaxed in GLib 2.54.
+         * 
+         * If a class explicitly supports being initialized multiple times, it is
+         * recommended that the method is idempotent: multiple calls with the same
+         * arguments should return the same results. Only the first call initializes
+         * the object; further calls return the result of the first call.
+         * 
+         * One reason why a class might need to support idempotent initialization is if
+         * it is designed to be used via the singleton pattern, with a
+         * {@link GObject.ObjectClass}.constructor that sometimes returns an existing instance.
+         * In this pattern, a caller would expect to be able to call `g_initable_init()`
+         * on the result of `g_object_new()`, regardless of whether it is in fact a new
+         * instance.
+         * @param cancellable optional {@link Gio.Cancellable} object, `null` to ignore.
+         * @virtual
+         */
+        vfunc_init(cancellable: Gio.Cancellable | null): boolean;
+    }
+
+
+    namespace DeviceEvent {
+        // Signal signatures
+        interface SignalSignatures extends GObject.Object.SignalSignatures {}
+
+        // Constructor properties interface
+        interface ConstructorProps extends GObject.Object.ConstructorProps {}
+    }
+
+    /**
+     * @gir-type Class
+     */
+    class DeviceEvent extends GObject.Object {
+        static $gtype: GObject.GType<DeviceEvent>;
+
+        /**
+         * Compile-time signal type information.
+         *
+         * This instance property is generated only for TypeScript type checking.
+         * It is not defined at runtime and should not be accessed in JS code.
+         * @internal
+         */
+        $signals: DeviceEvent.SignalSignatures;
+
+        // Constructors
+        constructor(properties?: Partial<DeviceEvent.ConstructorProps>, ...args: any[]);
+
+        _init(...args: any[]): void;
+
+        // Signals
+        /** @signal */
+        connect<K extends keyof DeviceEvent.SignalSignatures>(signal: K, callback: GObject.SignalCallback<this, DeviceEvent.SignalSignatures[K]>): number;
+        connect(signal: string, callback: (...args: any[]) => any): number;
+
+        /** @signal */
+        connect_after<K extends keyof DeviceEvent.SignalSignatures>(signal: K, callback: GObject.SignalCallback<this, DeviceEvent.SignalSignatures[K]>): number;
+        connect_after(signal: string, callback: (...args: any[]) => any): number;
+
+        /** @signal */
+        emit<K extends keyof DeviceEvent.SignalSignatures>(signal: K, ...args: GObject.GjsParameters<DeviceEvent.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never): void;
+        emit(signal: string, ...args: any[]): void;
+
+        // Methods
+        /**
+         * Gets any bytes data from the event.
+         * @returns a {@link GLib.Bytes}, or `null`
+         */
+        get_bytes(): GLib.Bytes;
+
+        /**
+         * Gets the event ID.
+         * @returns string, or `null`
+         */
+        get_id(): string;
+
+        /**
+         * Gets any return code from the event.
+         * @returns a `enum libusb_error`
+         */
+        get_rc(): number;
+
+        /**
+         * Gets any status data from the event.
+         * @returns a `enum libusb_transfer_status`, or -1 for failure
+         */
+        get_status(): number;
+
+        /**
+         * Set the bytes data to the event.
+         * @param bytes a {@link GLib.Bytes}
+         */
+        set_bytes(bytes: GLib.Bytes | Uint8Array): void;
+    }
+
+
+    namespace DeviceList {
+        // Signal signatures
+        interface SignalSignatures extends GObject.Object.SignalSignatures {
+            /**
+             * This signal is emitted when a USB device is added.
+             * @signal
+             * @run-last
+             */
+            "device-added": (arg0: Device) => void;
+            /**
+             * This signal is emitted when a USB device is removed.
+             * @signal
+             * @run-last
+             */
+            "device-removed": (arg0: Device) => void;
+            "notify::context": (pspec: GObject.ParamSpec) => void;
+        }
+
+        // Constructor properties interface
+        interface ConstructorProps extends GObject.Object.ConstructorProps {
+            context: Context;
+        }
+    }
+
+    /**
+     * @gir-type Class
+     */
+    class DeviceList extends GObject.Object {
+        static $gtype: GObject.GType<DeviceList>;
+
+        // Properties
+        /**
+         * @construct-only
+         */
+        get context(): Context;
+
+        /**
+         * Compile-time signal type information.
+         *
+         * This instance property is generated only for TypeScript type checking.
+         * It is not defined at runtime and should not be accessed in JS code.
+         * @internal
+         */
+        $signals: DeviceList.SignalSignatures;
+
+        // Constructors
+        constructor(properties?: Partial<DeviceList.ConstructorProps>, ...args: any[]);
+
+        _init(...args: any[]): void;
+
+        static ["new"](context: Context): DeviceList;
+
+        // Signals
+        /** @signal */
+        connect<K extends keyof DeviceList.SignalSignatures>(signal: K, callback: GObject.SignalCallback<this, DeviceList.SignalSignatures[K]>): number;
+        connect(signal: string, callback: (...args: any[]) => any): number;
+
+        /** @signal */
+        connect_after<K extends keyof DeviceList.SignalSignatures>(signal: K, callback: GObject.SignalCallback<this, DeviceList.SignalSignatures[K]>): number;
+        connect_after(signal: string, callback: (...args: any[]) => any): number;
+
+        /** @signal */
+        emit<K extends keyof DeviceList.SignalSignatures>(signal: K, ...args: GObject.GjsParameters<DeviceList.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never): void;
+        emit(signal: string, ...args: any[]): void;
+
+        // Virtual methods
+        /**
+         * @param device 
+         * @virtual
+         */
+        vfunc_device_added(device: Device): void;
+
+        /**
+         * @param device 
+         * @virtual
+         */
+        vfunc_device_removed(device: Device): void;
+
+        // Methods
+        /**
+         * This function does nothing.
+         */
+        coldplug(): void;
+
+        /**
+         * Finds a device based on its bus and address values.
+         * @param bus a bus number
+         * @param address a bus address
+         * @returns a new {@link GUsb.Device}, or `null` if not found.
+         */
+        find_by_bus_address(bus: number, address: number): Device;
+
+        /**
+         * Finds a device based on its bus and address values.
+         * @param vid a vendor ID
+         * @param pid a product ID
+         * @returns a new {@link GUsb.Device}, or `null` if not found.
+         */
+        find_by_vid_pid(vid: number, pid: number): Device;
+
+        /**
+         * @returns a new {@link GLib.PtrArray} of {@link GUsb.Device}'s.
+         */
+        get_devices(): Device[];
+    }
+
+
+    namespace Endpoint {
+        // Signal signatures
+        interface SignalSignatures extends GObject.Object.SignalSignatures {}
+
+        // Constructor properties interface
+        interface ConstructorProps extends GObject.Object.ConstructorProps {}
+    }
+
+    /**
+     * @gir-type Class
+     */
+    class Endpoint extends GObject.Object {
+        static $gtype: GObject.GType<Endpoint>;
+
+        /**
+         * Compile-time signal type information.
+         *
+         * This instance property is generated only for TypeScript type checking.
+         * It is not defined at runtime and should not be accessed in JS code.
+         * @internal
+         */
+        $signals: Endpoint.SignalSignatures;
+
+        // Constructors
+        constructor(properties?: Partial<Endpoint.ConstructorProps>, ...args: any[]);
+
+        _init(...args: any[]): void;
+
+        // Signals
+        /** @signal */
+        connect<K extends keyof Endpoint.SignalSignatures>(signal: K, callback: GObject.SignalCallback<this, Endpoint.SignalSignatures[K]>): number;
+        connect(signal: string, callback: (...args: any[]) => any): number;
+
+        /** @signal */
+        connect_after<K extends keyof Endpoint.SignalSignatures>(signal: K, callback: GObject.SignalCallback<this, Endpoint.SignalSignatures[K]>): number;
+        connect_after(signal: string, callback: (...args: any[]) => any): number;
+
+        /** @signal */
+        emit<K extends keyof Endpoint.SignalSignatures>(signal: K, ...args: GObject.GjsParameters<Endpoint.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never): void;
+        emit(signal: string, ...args: any[]): void;
+
+        // Methods
+        /**
+         * Gets the address of the endpoint.
+         * @returns The 4-bit endpoint address
+         */
+        get_address(): number;
+
+        /**
+         * Gets the direction of the endpoint.
+         * @returns The endpoint direction
+         */
+        get_direction(): DeviceDirection;
+
+        /**
+         * Gets any extra data from the endpoint.
+         * @returns a {@link GLib.Bytes}, or `null` for failure
+         */
+        get_extra(): GLib.Bytes;
+
+        /**
+         * Gets the type of endpoint.
+         * @returns The 8-bit type
+         */
+        get_kind(): number;
+
+        /**
+         * Gets the maximum packet size this endpoint is capable of sending/receiving.
+         * @returns The maximum packet size
+         */
+        get_maximum_packet_size(): number;
+
+        /**
+         * Gets the number part of endpoint address.
+         * @returns The lower 4-bit of endpoint address
+         */
+        get_number(): number;
+
+        /**
+         * Gets the endpoint polling interval.
+         * @returns The endpoint polling interval
+         */
+        get_polling_interval(): number;
+
+        /**
+         * Gets the rate at which synchronization feedback is provided, for audio device only.
+         * @returns The endpoint refresh
+         */
+        get_refresh(): number;
+
+        /**
+         * Gets the address if the synch endpoint, for audio device only.
+         * @returns The synch endpoint address
+         */
+        get_synch_address(): number;
+    }
+
+
+    namespace Interface {
+        // Signal signatures
+        interface SignalSignatures extends GObject.Object.SignalSignatures {}
+
+        // Constructor properties interface
+        interface ConstructorProps extends GObject.Object.ConstructorProps {}
+    }
+
+    /**
+     * @gir-type Class
+     */
+    class Interface extends GObject.Object {
+        static $gtype: GObject.GType<Interface>;
+
+        /**
+         * Compile-time signal type information.
+         *
+         * This instance property is generated only for TypeScript type checking.
+         * It is not defined at runtime and should not be accessed in JS code.
+         * @internal
+         */
+        $signals: Interface.SignalSignatures;
+
+        // Constructors
+        constructor(properties?: Partial<Interface.ConstructorProps>, ...args: any[]);
+
+        _init(...args: any[]): void;
+
+        // Signals
+        /** @signal */
+        connect<K extends keyof Interface.SignalSignatures>(signal: K, callback: GObject.SignalCallback<this, Interface.SignalSignatures[K]>): number;
+        connect(signal: string, callback: (...args: any[]) => any): number;
+
+        /** @signal */
+        connect_after<K extends keyof Interface.SignalSignatures>(signal: K, callback: GObject.SignalCallback<this, Interface.SignalSignatures[K]>): number;
+        connect_after(signal: string, callback: (...args: any[]) => any): number;
+
+        /** @signal */
+        emit<K extends keyof Interface.SignalSignatures>(signal: K, ...args: GObject.GjsParameters<Interface.SignalSignatures[K]> extends [any, ...infer Q] ? Q : never): void;
+        emit(signal: string, ...args: any[]): void;
+
+        // Methods
+        /**
+         * Gets the alternate setting for the interface.
+         * @returns alt setting, typically zero.
+         */
+        get_alternate(): number;
+
+        /**
+         * Gets the interface class, typically a `GUsbInterfaceClassCode`.
+         * @returns a interface class number, e.g. 0x09 is a USB hub.
+         */
+        get_class(): number;
+
+        /**
+         * Gets interface endpoints.
+         * @returns an array of endpoints, or `null` on failure.
+         */
+        get_endpoints(): Endpoint[];
+
+        /**
+         * Gets any extra data from the interface.
+         * @returns a {@link GLib.Bytes}, or `null` for failure
+         */
+        get_extra(): GLib.Bytes;
+
+        /**
+         * Gets the index for the string descriptor.
+         * @returns a string descriptor index.
+         */
+        get_index(): number;
+
+        /**
+         * Gets the type of interface.
+         * @returns The 8-bit address
+         */
+        get_kind(): number;
+
+        /**
+         * Gets the USB bus number for the interface.
+         * @returns The 8-bit bus number
+         */
+        get_length(): number;
+
+        /**
+         * Gets the interface number.
+         * @returns The interface ID
+         */
+        get_number(): number;
+
+        /**
+         * Gets the interface protocol qualified by the class and subclass numbers.
+         * See `g_usb_interface_get_class()` and `g_usb_interface_get_subclass()`.
+         * @returns a interface protocol number.
+         */
+        get_protocol(): number;
+
+        /**
+         * Gets the interface subclass qualified by the class number.
+         * See `g_usb_interface_get_class()`.
+         * @returns a interface subclass number.
+         */
+        get_subclass(): number;
+    }
+
+
+    /**
+     * @gir-type Alias
+     */
+    type BosDescriptorClass = typeof BosDescriptor;
+
+    /**
+     * @gir-type Alias
+     */
+    type ContextClass = typeof Context;
+
+    /**
+     * @gir-type Alias
+     */
+    type DeviceClass = typeof Device;
+
+    /**
+     * @gir-type Alias
+     */
+    type DeviceEventClass = typeof DeviceEvent;
+
+    /**
+     * @gir-type Alias
+     */
+    type DeviceListClass = typeof DeviceList;
+
+    /**
+     * @gir-type Alias
+     */
+    type EndpointClass = typeof Endpoint;
+
+    /**
+     * @gir-type Alias
+     */
+    type InterfaceClass = typeof Interface;
+
+    /**
+     * @gir-type Struct
+     */
+    abstract class Source {
+        static $gtype: GObject.GType<Source>;
+
+        // Static methods
+        static error_quark(): GLib.Quark;
+
+        // Methods
+        /**
+         * This function does nothing.
+         * @param func a function to call
+         */
+        set_callback(func: GLib.SourceFunc): void;
+    }
+
+
+    /**
+     * Name of the imported GIR library
+     * `see` https://gitlab.gnome.org/GNOME/gjs/-/blob/master/gi/ns.cpp#L188
+     */
+    const __name__: string;
+
+    /**
+     * Version of the imported GIR library
+     * `see` https://gitlab.gnome.org/GNOME/gjs/-/blob/master/gi/ns.cpp#L189
+     */
+    const __version__: string;
+}
+
+export default GUsb;
+
+}
+
+declare module 'gi://GUsb' {
+    import GUsb10 from 'gi://GUsb?version=1.0';
+    export default GUsb10;
+}
+// END
