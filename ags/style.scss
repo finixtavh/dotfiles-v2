@@ -118,6 +118,24 @@ window.PowerMenu { background: transparent; }
   color:     $purple-light;
 }
 
+/* --- Color Picker --- */
+.color-picker {
+  background:    $bg-item;
+  border:        1px solid $border;
+  border-radius: $radius-pill;
+  padding:       2px 10px;
+  margin:        5px 0;
+  transition:    all 0.2s ease;
+}
+.color-picker:hover {
+  background:   $bg-item-hover;
+  border-color: $border-bright;
+}
+.color-picker-icon {
+  font-size: 15px;
+  color:     $secondary;
+}
+
 /* --- Clock --- */
 .clock {
   background:    $bg-item;

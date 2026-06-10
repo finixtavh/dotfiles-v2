@@ -36,9 +36,8 @@ hl.config({
         gaps_out = 8,
         border_size = 2,
         col = {
-            -- Catppuccin Mocha themed blue/lavender gradient
-            active_border   = { colors = {"rgba(89b4faee)", "rgba(cba6f7ee)"}, angle = 45 },
-            inactive_border = "rgba(31313600)",
+            active_border   = { colors = {"rgba(89b19eee)", "rgba(33473dee)"}, angle = 45 },
+            inactive_border = "rgba(2a2a2a00)",
         },
         resize_on_border = true,
         allow_tearing = true,

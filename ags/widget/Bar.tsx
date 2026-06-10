@@ -23,6 +23,19 @@ function Launcher() {
 }
 
 // ============================================================
+//  COLOR PICKER
+// ============================================================
+function ColorPicker() {
+  return (
+    <button class="color-picker" tooltip_text="Color picker (copies to clipboard)"
+      onClicked={() => execAsync(['hyprpicker', '-a']).catch(() => {})}
+    >
+      <label class="color-picker-icon" label="󰈋" />
+    </button>
+  )
+}
+
+// ============================================================
 //  CLOCK
 // ============================================================
 function Clock() {
@@ -501,6 +514,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
         {/* ── LEFT ── Launcher | Clock | Calendar | sep | Taskbar — hexpand pushes right group to edge */}
         <box class="bar-left" halign={Gtk.Align.START} spacing={6} hexpand>
           <Launcher />
+          <ColorPicker />
           <Clock />
           <CalendarWidget />
           <Sep />
