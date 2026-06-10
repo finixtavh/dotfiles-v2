@@ -1,0 +1,951 @@
+/* AGS Bar & MusicBar - Dark Purple Glassmorphism */
+
+/* --- Variables --- */
+$bg-deep:       #050505;
+$bg-glass:      #121212;
+$bg-item:       rgba(42, 42, 42, 0.55);
+$bg-item-hover: rgba(77, 107, 92, 0.25);
+$bg-active:     rgba(51, 71, 61, 0.55);
+
+$accent:        #89B19E;
+$primary:       #33473D;
+$secondary:     #4D6B5C;
+$accent-glow:   rgba(137, 177, 158, 0.25);
+
+/* legacy aliases */
+$purple-light:  $accent;
+$purple-mid:    $secondary;
+$purple-glow:   $accent-glow;
+$cyan-accent:   $accent;
+
+$text-primary:   #E8E8E8;
+$text-secondary: #C8C8C8;
+$text-dim:       #7A7A7A;
+
+$border:        #2A2A2A;
+$border-bright: #4D6B5C;
+$radius:        5px;
+$radius-pill:   5px;
+
+/* --- Reset --- */
+* {
+  font-family: "JetBrainsMono Nerd Font", "Inter", sans-serif;
+  font-size:   13px;
+  color:       $text-primary;
+}
+
+/* --- Window Layouts --- */
+window.Bar { background: transparent; }
+window.MusicBar { background: transparent; }
+window.WallpaperWindow { background: transparent; }
+window.PowerMenu { background: transparent; }
+
+/* --- Wallpaper --- */
+.wallpaper-box {
+  min-width:  1px;
+  min-height: 1px;
+}
+
+/* --- Bar Base --- */
+.bar-root {
+  background: $bg-deep;
+  min-height: 38px;
+}
+.music-bar-root {
+  border-radius: 14px 14px 0 0;
+  margin:        6px 6px 0 6px;
+  border:        1px solid $border;
+  border-bottom: none;
+}
+
+/* --- Music Bar 3-pill layout --- */
+.music-3pill-root {
+  background: transparent;
+  border:     none;
+  padding:    0 8px;
+}
+
+.m-left-pill,
+.m-center-pill,
+.m-right-pill {
+  background:    $bg-glass;
+  border:        1px solid $border;
+  border-top:    none;
+  border-radius: 0 0 14px 14px;
+  padding:       5px 14px;
+  min-height:    36px;
+}
+
+.m-left-pill {
+  margin-left:   0;
+  margin-top:    6px;
+  border-top:    1px solid $border;
+  border-radius: 10px;
+}
+.m-right-pill  { margin-right: 0; }
+.m-center-pill {
+  padding:       5px 16px;
+  border-top:    1px solid $border;
+  border-radius: 10px;
+}
+.main-bar-root {
+  border-radius: 0 0 14px 14px;
+  margin:        0 6px 6px 6px;
+  border:        1px solid $border;
+  border-top:    none;
+}
+
+.bar-inner {
+  min-height: 38px;
+  padding:    0 12px;
+}
+
+/* --- Launcher (Arch Button) --- */
+.launcher {
+  background:    $bg-item;
+  border:        1px solid $border;
+  border-radius: $radius-pill;
+  padding:       2px 10px;
+  margin:        5px 0;
+  transition:    all 0.2s ease;
+}
+.launcher:hover {
+  background:   $bg-active;
+  border-color: $border-bright;
+}
+.launcher-icon {
+  font-size: 16px;
+  color:     $purple-light;
+}
+
+/* --- Clock --- */
+.clock {
+  background:    $bg-item;
+  border:        1px solid $border;
+  border-radius: $radius-pill;
+  padding:       2px 10px;
+  margin:        5px 0;
+}
+.clock-icon {
+  font-size: 13px;
+  color:     $purple-light;
+}
+.clock-time {
+  font-weight:    600;
+  font-size:      13px;
+  letter-spacing: 0.5px;
+}
+
+/* --- Calendar Button --- */
+.calendar-btn {
+  background:    $bg-item;
+  border:        1px solid $border;
+  border-radius: $radius-pill;
+  padding:       2px 14px;
+  margin:        5px 0;
+  transition:    200ms ease;
+}
+.calendar-btn:hover {
+  background:   $bg-item-hover;
+  border-color: $border-bright;
+}
+.calendar-icon {
+  font-size: 13px;
+  color:     $purple-light;
+}
+.calendar-date {
+  font-weight: 500;
+  font-size:   13px;
+}
+
+/* --- Taskbar --- */
+.taskbar {
+  margin: 5px 0;
+}
+.task-btn {
+  background:    $bg-item;
+  border:        1px solid $border;
+  border-radius: 6px;
+  padding:       2px 6px;
+  min-height:    24px;
+  transition:    all 0.15s ease;
+}
+.task-btn:hover {
+  background:   $bg-active;
+  border-color: $border-bright;
+}
+
+/* --- System Tray --- */
+.tray {
+  margin: 5px 0;
+}
+.tray-item {
+  background:    transparent;
+  border:        none;
+  border-radius: 6px;
+  padding:       2px;
+  min-height:    24px;
+  min-width:     24px;
+}
+.tray-item:hover {
+  background: $bg-item-hover;
+}
+
+/* --- Music Bar Elements --- */
+.no-player-label {
+  font-style: italic;
+  color:      $text-dim;
+}
+
+.album-art-box {
+  border-radius: 6px;
+  min-width:     28px;
+  min-height:    28px;
+  background:    $bg-item;
+  margin:        5px 0;
+  border:        1px solid $border;
+}
+
+.media-info {
+  margin: 2px 0;
+}
+.song-title {
+  font-weight: 600;
+  font-size:   12px;
+  color:       $text-primary;
+}
+.song-artist {
+  font-size: 10px;
+  color:     $text-secondary;
+}
+
+/* --- Media Controls --- */
+.media-controls {
+  margin: 5px 0;
+}
+.ctrl-btn {
+  background:    transparent;
+  border:        none;
+  border-radius: 6px;
+  padding:       2px 4px;
+  color:         $text-secondary;
+  font-size:     14px;
+  min-height:    24px;
+  min-width:     24px;
+}
+.ctrl-btn:hover {
+  background: $bg-item-hover;
+  color:      $purple-light;
+}
+.ctrl-btn.play {
+  background: $bg-item;
+}
+.ctrl-btn.play.active {
+  background: $bg-active;
+  color:      $purple-light;
+  border:     1px solid $border;
+}
+
+/* --- Progress Bar --- */
+.progress-container {
+  min-width: 80px;
+  margin:    8px 0;
+}
+progressbar.song-progress {
+  min-height: 5px;
+}
+progressbar.song-progress trough {
+  background:    rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  min-height:    5px;
+  border:        none;
+}
+progressbar.song-progress progress {
+  background:    linear-gradient(to right, $purple-mid, $purple-light);
+  border-radius: 3px;
+  min-height:    5px;
+}
+
+/* --- Lyrics Engine --- */
+.lyrics-container {
+  background:    rgba(18, 18, 18, 0.6);
+  border:        1px solid $border;
+  border-radius: $radius-pill;
+  padding:       2px 12px;
+  margin:        5px 0;
+  min-width:     256px;
+}
+.lyric-label {
+  font-weight:   600;
+  font-size:     12px;
+  letter-spacing: 0.2px;
+}
+.lyric-label.active {
+  color: $text-primary;
+}
+.lyric-label.no-lyrics {
+  color:      $text-dim;
+  font-style: italic;
+}
+.author-btn {
+  background:    $bg-item;
+  border:        none;
+  border-radius: $radius-pill;
+  padding:       1px 6px;
+  margin:        1px 0;
+  font-size:     10px;
+}
+.author-btn label {
+  font-size:  10px;
+  color:      $text-secondary;
+  font-weight: 500;
+}
+.author-btn.active label {
+  color: $purple-light;
+}
+.author-btn:hover {
+  background: $bg-item-hover;
+}
+
+/* --- Spectrum Visualizer --- */
+.spectrum {
+  margin:    5px 0;
+  min-width: 162px;
+}
+.spec-wrap {
+  min-height: 22px;
+}
+.spec-bar {
+  border-radius: 1px 1px 0 0;
+  min-width: 4px;
+}
+.spec-bar.sc0 { background: #89B19E; }
+.spec-bar.sc1 { background: #74A08B; }
+.spec-bar.sc2 { background: #5F8E79; }
+.spec-bar.sc3 { background: #4D6B5C; }
+.spec-bar.sc4 { background: #33473D; }
+
+/* --- Power Menu Window --- */
+.power-menu-root {
+  background:    $bg-deep;
+  border:        2px solid $border-bright;
+  border-radius: 15px;
+  padding:       30px;
+}
+.power-menu-title {
+  font-size:   18px;
+  font-weight: 700;
+  color:       $purple-light;
+}
+.power-btn {
+  background:    $bg-item;
+  border:        1px solid $border;
+  border-radius: $radius;
+  padding:       16px;
+  min-width:     84px;
+  transition:    200ms ease;
+}
+.power-btn:hover {
+  background:   $bg-active;
+  border-color: $border-bright;
+}
+.power-icon {
+  font-size:  26px;
+}
+.power-label {
+  font-size:   11px;
+  font-weight: 500;
+  color:       $text-secondary;
+}
+.power-btn:hover .power-label {
+  color: $text-primary;
+}
+
+/* --- Spacers & Paddings --- */
+.bar-left  { padding-left:  4px; }
+.bar-right { padding-right: 4px; }
+.divider-v {
+  background:    $border;
+  min-width:     1px;
+  min-height:    18px;
+  margin:        10px 4px;
+}
+
+/* --- Lyrics: hover state --- */
+.lyrics-container {
+  transition: background 150ms ease, border-color 150ms ease;
+}
+.lyrics-container:hover {
+  background:   rgba(30, 30, 30, 0.7);
+  border-color: $border-bright;
+}
+
+/* --- Flyout overlay window --- */
+window.FlyoutWindow {
+  background: transparent;
+}
+.npp-root,
+.lyrics-flyout-root {
+  background:    rgba(5, 5, 5, 0.97);
+  border:        1px solid $border-bright;
+  border-radius: $radius;
+}
+
+/* --- Now-playing hover button (art + title wrapper) --- */
+.now-playing-btn {
+  background:    transparent;
+  border:        none;
+  border-radius: $radius;
+  padding:       0;
+  margin:        0;
+  transition:    background 120ms ease;
+}
+.now-playing-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.now-playing-btn:focus {
+  box-shadow: none;
+  outline:    none;
+}
+
+/* --- Now-playing flyout popover --- */
+.npp-art {
+  border-radius: 8px;
+  min-width:     92px;
+  min-height:    92px;
+}
+.npp-title {
+  font-size:   13px;
+  font-weight: 700;
+  color:       $text-primary;
+}
+.npp-artist {
+  font-size:  11px;
+  font-weight: 400;
+  color:       $text-secondary;
+}
+.npp-time {
+  font-size:   10px;
+  color:       $text-dim;
+  min-width:   34px;
+}
+progressbar.npp-bar {
+  min-height: 4px;
+  min-width:  140px;
+}
+progressbar.npp-bar trough {
+  background:    rgba(255,255,255,0.1);
+  border-radius: 2px;
+  min-height:    4px;
+  border:        none;
+}
+progressbar.npp-bar progress {
+  background:    linear-gradient(to right, $purple-mid, $purple-light);
+  border-radius: 2px;
+  min-height:    4px;
+}
+.npp-spec {
+  min-height: 22px;
+  min-width:  120px;
+}
+
+/* --- Lyrics container as button (no box) --- */
+button.lyrics-container {
+  background:    rgba(18, 18, 18, 0.6);
+  border:        1px solid $border;
+  border-radius: $radius-pill;
+  padding:       2px 12px;
+  margin:        5px 0;
+  min-width:     256px;
+  transition:    background 150ms ease, border-color 150ms ease;
+}
+button.lyrics-container:hover {
+  background:   rgba(30, 30, 30, 0.7);
+  border-color: $border-bright;
+}
+button.lyrics-container:focus {
+  box-shadow: none;
+  outline:    none;
+}
+
+/* --- Audio widgets (volume, mic) --- */
+.audio-group {
+  margin: 5px 0;
+}
+.audio-btn {
+  background:    $bg-item;
+  border:        1px solid $border;
+  border-radius: $radius-pill;
+  padding:       2px 8px;
+  min-height:    24px;
+  transition:    all 0.15s ease;
+}
+.audio-btn:hover {
+  background:   $bg-item-hover;
+  border-color: $border-bright;
+}
+.audio-icon {
+  font-size: 13px;
+  color:     $purple-light;
+}
+.audio-vol {
+  font-size:   11px;
+  font-weight: 500;
+  color:       $text-secondary;
+  min-width:   28px;
+}
+
+/* --- OSD popup --- */
+window.OSD {
+  background: transparent;
+}
+.osd-root {
+  background:    rgba(5, 5, 5, 0.94);
+  border:        1px solid $border-bright;
+  border-radius: 14px;
+  padding:       14px 20px;
+  min-width:     160px;
+}
+.osd-icon {
+  font-size:  26px;
+  color:      $purple-light;
+}
+.osd-text {
+  font-size:   12px;
+  font-weight: 600;
+  color:       $text-primary;
+  min-width:   80px;
+}
+progressbar.osd-bar {
+  min-height: 5px;
+  min-width:  120px;
+}
+progressbar.osd-bar trough {
+  background:    rgba(255,255,255,0.1);
+  border-radius: 3px;
+  min-height:    5px;
+  border:        none;
+}
+progressbar.osd-bar progress {
+  background:    linear-gradient(to right, $purple-mid, $purple-light);
+  border-radius: 3px;
+  min-height:    5px;
+}
+
+/* --- Lyrics: hover state (legacy box, kept for reference) --- */
+.lyrics-container {
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+/* --- Lyrics popover (3-line context) --- */
+popover.background {
+  padding: 0;
+}
+popover > contents {
+  background:    rgba(5, 5, 5, 0.97);
+  border:        1px solid $border-bright;
+  border-radius: $radius;
+  padding:       0;
+}
+.pop-lyric-filename {
+  font-size:   10px;
+  font-weight: 400;
+  color:       $text-dim;
+  font-style:  italic;
+  padding:     2px 2px 4px;
+}
+.pop-lyric-current {
+  font-size:      14px;
+  font-weight:    700;
+  color:          $text-primary;
+  padding:        4px 2px;
+}
+.pop-lyric-context {
+  font-size:   11px;
+  font-weight: 400;
+  color:       $text-dim;
+  padding:     2px 2px;
+}
+
+/* --- Flyout now-playing: bigger sizing --- */
+.npp-root {
+  min-width: 320px;
+}
+.npp-art {
+  border-radius: 10px;
+  min-width:     92px;
+  min-height:    92px;
+  margin:        5px;
+}
+.npp-title {
+  font-size:   15px;
+  font-weight: 700;
+  color:       $text-primary;
+}
+.npp-artist {
+  font-size:   12px;
+  font-weight: 400;
+  color:       $text-secondary;
+}
+.npp-time {
+  font-size:  11px;
+  color:      $text-dim;
+  min-width:  36px;
+}
+
+/* --- Now-playing seekable scale --- */
+scale.npp-scale {
+  min-width:  160px;
+  min-height: 16px;
+}
+scale.npp-scale trough {
+  background:    rgba(255,255,255,0.1);
+  border-radius: 4px;
+  min-height:    5px;
+  border:        none;
+}
+scale.npp-scale trough highlight {
+  background:    linear-gradient(to right, $purple-mid, $purple-light);
+  border-radius: 4px;
+  min-height:    5px;
+}
+scale.npp-scale slider {
+  background:    $purple-light;
+  border-radius: 50%;
+  min-width:     12px;
+  min-height:    12px;
+  margin:        -4px;
+  border:        none;
+  box-shadow:    0 0 4px rgba(192,132,252,0.6);
+}
+
+/* --- npp-spec bigger --- */
+.npp-spec {
+  min-height: 40px;
+  min-width:  160px;
+}
+
+/* --- Lyrics flyout: bigger --- */
+.lyrics-flyout-root {
+  min-width: 400px;
+}
+
+/* --- Muted audio buttons dim --- */
+.audio-btn.muted {
+  opacity: 0.45;
+}
+.audio-btn.muted .audio-icon {
+  color: $text-dim;
+}
+
+/* --- System tray buttons (network, BT, VPN, notif) --- */
+.sys-btn {
+  background:    $bg-item;
+  border:        1px solid $border;
+  border-radius: $radius-pill;
+  padding:       2px 8px;
+  min-height:    24px;
+  transition:    all 0.15s ease;
+}
+.sys-btn:hover {
+  background:   $bg-item-hover;
+  border-color: $border-bright;
+}
+.sys-icon {
+  font-size: 14px;
+  color:     $purple-light;
+}
+
+/* --- Network widget --- */
+.net-btn {
+  padding: 2px 10px;
+}
+.net-ssid {
+  font-size:   10px;
+  font-weight: 500;
+  color:       $text-primary;
+}
+.net-speed {
+  font-size:  9px;
+  color:      $text-secondary;
+  min-width:  40px;
+}
+
+/* --- VPN button --- */
+.vpn-btn .sys-icon {
+  color: $accent;
+}
+
+/* --- Notification bell --- */
+.notif-bell {
+  padding: 2px 8px;
+}
+
+/* --- Music bar seek scale --- */
+scale.song-seek-scale {
+  min-width:  80px;
+  min-height: 16px;
+}
+scale.song-seek-scale trough {
+  background:    rgba(255,255,255,0.08);
+  border-radius: 4px;
+  min-height:    4px;
+  border:        none;
+}
+scale.song-seek-scale trough highlight {
+  background:    linear-gradient(to right, $purple-mid, $purple-light);
+  border-radius: 4px;
+  min-height:    4px;
+}
+scale.song-seek-scale slider {
+  background:    $purple-light;
+  border-radius: 50%;
+  min-width:     10px;
+  min-height:    10px;
+  margin:        -3px;
+  border:        none;
+  box-shadow:    none;
+}
+
+/* --- Bottom bar CAVA spectrum --- */
+.bar-spectrum {
+  margin: 4px 0;
+}
+
+/* --- Keybind Viewer --- */
+window.KeybindsViewer {
+  background: transparent;
+}
+
+.kb-root {
+  background:    rgba(5, 5, 5, 0.96);
+  border:        1px solid $border-bright;
+  border-radius: 16px;
+  padding:       24px 28px;
+  min-width:     660px;
+}
+
+entry.kb-search {
+  background:    $bg-item;
+  color:         $text-primary;
+  border:        1px solid $border;
+  border-radius: 8px;
+  padding:       6px 10px;
+  caret-color:   $accent;
+}
+entry.kb-search:focus {
+  border-color: $border-bright;
+  box-shadow:   none;
+  outline:      none;
+}
+
+.kb-section-title {
+  font-size:      10px;
+  font-weight:    700;
+  letter-spacing: 2px;
+  color:          $accent;
+  margin-top:     4px;
+  margin-bottom:  2px;
+}
+
+.kb-common-grid {
+  margin-bottom: 4px;
+}
+
+.kb-key {
+  font-family:  "JetBrainsMono Nerd Font", monospace;
+  font-size:    11px;
+  font-weight:  600;
+  color:        $accent;
+}
+
+.kb-action {
+  font-size:  12px;
+  color:      $text-secondary;
+}
+
+listbox.kb-list {
+  background: transparent;
+  border:     none;
+}
+listbox.kb-list row.kb-row {
+  background:    transparent;
+  border-radius: 6px;
+  padding:       0;
+}
+listbox.kb-list row.kb-row:hover {
+  background: $bg-item-hover;
+}
+
+.kb-section-tag {
+  font-size:  9px;
+  color:      $text-dim;
+  font-style: italic;
+}
+
+.kb-hint {
+  font-size:  10px;
+  color:      $text-dim;
+  font-style: italic;
+  margin-top: 4px;
+}
+
+/* --- Command Center --- */
+window.CommandCenter {
+  background: transparent;
+}
+
+.cmd-root {
+  background:    rgba(5, 5, 5, 0.96);
+  border:        1px solid $border-bright;
+  border-radius: 16px;
+  padding:       32px 40px;
+  min-width:     480px;
+}
+
+.cmd-title {
+  font-size:      36px;
+  font-weight:    800;
+  letter-spacing: 6px;
+}
+
+.cmd-sep {
+  background: $border;
+  min-height: 1px;
+}
+
+.cmd-btn {
+  background:    $bg-item;
+  border:        1px solid $border;
+  border-radius: 12px;
+  padding:       18px 22px;
+  min-width:     130px;
+  transition:    all 0.15s ease;
+}
+.cmd-btn:hover {
+  background:   $bg-active;
+  border-color: $border-bright;
+}
+.cmd-btn:focus {
+  box-shadow: none;
+  outline:    none;
+}
+
+.cmd-btn-icon {
+  font-size: 28px;
+  color:     $accent;
+}
+
+.cmd-btn-label {
+  font-size:   13px;
+  font-weight: 600;
+  color:       $text-primary;
+}
+
+.cmd-btn-desc {
+  font-size:  10px;
+  color:      $text-dim;
+  font-style: italic;
+}
+
+.cmd-hint {
+  font-size:  10px;
+  color:      $text-dim;
+  font-style: italic;
+}
+
+.cmd-btn-power {
+  border-color: rgba(248, 113, 113, 0.35);
+}
+.cmd-btn-power:hover {
+  background:   rgba(248, 113, 113, 0.12);
+  border-color: rgba(248, 113, 113, 0.7);
+}
+.cmd-btn-icon-power {
+  color: #f87171;
+}
+
+/* --- Notification center panel --- */
+window.NotifCenter {
+  background: transparent;
+}
+.notif-panel {
+  background:    rgba(5, 5, 5, 0.97);
+  border:        1px solid $border-bright;
+  border-radius: $radius;
+  min-width:     360px;
+}
+.notif-panel-title {
+  font-size:   14px;
+  font-weight: 700;
+  color:       $purple-light;
+}
+.notif-clear-btn {
+  background:    $bg-item;
+  border:        1px solid $border;
+  border-radius: $radius-pill;
+  padding:       2px 8px;
+  font-size:     11px;
+  color:         $text-secondary;
+  transition:    150ms ease;
+}
+.notif-clear-btn:hover {
+  background:   $bg-item-hover;
+  border-color: $border-bright;
+  color:        $text-primary;
+}
+.notif-item {
+  background:    $bg-item;
+  border:        1px solid $border;
+  border-radius: $radius;
+  padding:       8px 10px;
+  transition:    150ms ease;
+}
+.notif-item:hover {
+  background: $bg-item-hover;
+}
+.notif-item.urgency-2 {
+  border-color: rgba(248, 113, 113, 0.4);
+}
+.notif-icon-box {
+  min-width:  36px;
+  min-height: 36px;
+}
+.notif-app {
+  font-size:   10px;
+  font-weight: 600;
+  color:       $purple-light;
+}
+.notif-time {
+  font-size: 9px;
+  color:     $text-dim;
+}
+.notif-summary {
+  font-size:   12px;
+  font-weight: 600;
+  color:       $text-primary;
+}
+.notif-body {
+  font-size:  11px;
+  color:      $text-secondary;
+}
+.notif-dismiss {
+  background:    transparent;
+  border:        none;
+  border-radius: 50%;
+  min-width:     22px;
+  min-height:    22px;
+  padding:       0;
+  color:         $text-dim;
+  font-size:     13px;
+}
+.notif-dismiss:hover {
+  background: rgba(248, 113, 113, 0.2);
+  color:      #f87171;
+}
+.notif-empty {
+  font-size:  12px;
+  color:      $text-dim;
+  font-style: italic;
+  padding:    12px 0;
+}

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "lib": ["es2022"],
+    "module": "es2022",
+    "moduleResolution": "node",
+    "jsx": "react",
+    "jsxFactory": "Astal.createElement",
+    "jsxFragmentFactory": "Astal.Fragment",
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "ags": ["@girs/astal-3.0"]
+    }
+  }
+}
