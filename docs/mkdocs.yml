@@ -1,0 +1,44 @@
+site_name: dotfiles-v2
+site_description: Documentación de los dotfiles — Hyprland + AGS v3
+site_author: finixtavh
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: custom
+    accent: custom
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - toc.integrate
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - Inicio: index.md
+  - AGS Bar: ags.md
+  - Hyprland: hypr.md
+  - Wallman: wallman.md
+  - Letras (.lyr): lyr.md
+  - Instalación: install.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true

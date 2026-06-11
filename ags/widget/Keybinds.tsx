@@ -259,11 +259,15 @@ export default function Keybinds() {
 
           self.show_all()
 
-          // Focus search entry when window opens
-          win.connect('show', () => {
-            entry.set_text('')
-            rows.forEach(({ row }) => row.set_visible(true))
-            entry.grab_focus()
+          // Focus search entry when window opens (defer — win $= fires after children $=)
+          GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
+            const topWin = self.get_toplevel?.() ?? win
+            if (topWin) topWin.connect('show', () => {
+              entry.set_text('')
+              rows.forEach(({ row }) => row.set_visible(true))
+              entry.grab_focus()
+            })
+            return GLib.SOURCE_REMOVE
           })
         }}
       />

@@ -7,6 +7,7 @@ import OSD from "./widget/OSD"
 import NotificationCenter from "./widget/NotificationCenter"
 import CommandCenter from "./widget/CommandCenter"
 import Keybinds from "./widget/Keybinds"
+import SettingsPanel from "./widget/SettingsPanel"
 
 app.start({
   instanceName: "ags-bar",
@@ -22,5 +23,6 @@ app.start({
     PowerMenu()
     CommandCenter()
     Keybinds()
+    SettingsPanel()
   },
 })

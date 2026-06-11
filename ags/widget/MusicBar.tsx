@@ -6,7 +6,13 @@ import Gio from "gi://Gio"
 import AstalMpris from "gi://AstalMpris"
 import { createBinding, onCleanup, createState, createEffect } from "ags"
 import { execAsync } from "ags/process"
-import { NUM_BARS, cavaData, ensureCavaStarted } from "./cava"
+import { NUM_BARS, cavaData, ensureCavaStarted, REFRESH_HZ } from "./cava"
+import { flushSession, saveProgress, subscribeHistory, getTopListened, getRecent } from "./ListenHistory"
+import type { ListenEntry, RecentEntry } from "./ListenHistory"
+import { YTDLP_AVAILABLE, youtubeVideoId, watchUrl, checkIsMusic, getCachedResult } from "./YtDlp"
+import { loadSettings } from "./SettingsPanel"
+
+const SPEC_INTERVAL = Math.max(16, Math.round(1000 / REFRESH_HZ))
 
 // ============================================================
 //  TYPES
@@ -113,10 +119,20 @@ let indexReady  = false
 
 const normKey = (s: string) => s.toLowerCase().trim()
 
+const _indexRebuildSubs: Set<() => void> = new Set()
+function subscribeIndexRebuild(cb: () => void): () => void {
+  _indexRebuildSubs.add(cb)
+  return () => _indexRebuildSubs.delete(cb)
+}
+
 function buildIndex() {
   lyricsIndex = new Map()
   indexReady  = false
-  if (!GLib.file_test(LYRICS_DIR, GLib.FileTest.IS_DIR)) { indexReady = true; return }
+  if (!GLib.file_test(LYRICS_DIR, GLib.FileTest.IS_DIR)) {
+    indexReady = true
+    _indexRebuildSubs.forEach(cb => { try { cb() } catch (_) {} })
+    return
+  }
   try {
     const d = GLib.Dir.open(LYRICS_DIR, 0)
     let fn = d.read_name()
@@ -142,6 +158,7 @@ function buildIndex() {
   } catch (e) { console.warn('[lyrics] Dir open error:', e) }
   indexReady = true
   console.log(`[lyrics] Index: ${lyricsIndex.size} aliases, dir: ${LYRICS_DIR}`)
+  _indexRebuildSubs.forEach(cb => { try { cb() } catch (_) {} })
 }
 
 function watchLyricsDir() {
@@ -398,25 +415,47 @@ function openFlyoutWin(gdkmonitor: Gdk.Monitor, content: Gtk.Widget): () => void
 }
 
 // ============================================================
-//  NOW-PLAYING FLYOUT (hover album art / song name)
+//  NOW-PLAYING FLYOUT — 3-column: [top-listened | player | recent]
 // ============================================================
 function buildNowPlayingContent(player: AstalMpris.Player): Gtk.Box {
+  // Outer horizontal root: left panel | sep | center | sep | right panel
   const root = new Gtk.Box({
-    orientation: Gtk.Orientation.VERTICAL, spacing: 12,
-    margin_top: 25, margin_bottom: 16,
-    margin_start: 83, margin_end: 83, visible: true,
+    orientation: Gtk.Orientation.HORIZONTAL, spacing: 0,
+    margin_top: 12, margin_bottom: 12,
+    margin_start: 8, margin_end: 8, visible: true,
   })
   root.get_style_context().add_class('npp-root')
 
-  // ── Top row: art + title/artist ────────────────────────
+  // ── Left panel ─────────────────────────────────────────
+  const leftPanel = new Gtk.Box({
+    orientation: Gtk.Orientation.VERTICAL, spacing: 4, visible: true,
+    margin_start: 8, margin_end: 6, margin_top: 8, margin_bottom: 8,
+  })
+  buildLeftPanel(leftPanel)
+  root.add(leftPanel)
+
+  const vsep1 = new Gtk.Separator({ orientation: Gtk.Orientation.VERTICAL, visible: true })
+  vsep1.get_style_context().add_class('npp-vsep')
+  root.add(vsep1)
+
+  // ── Center column ──────────────────────────────────────
+  const center = new Gtk.Box({
+    orientation: Gtk.Orientation.VERTICAL, spacing: 12,
+    visible: true, hexpand: true, vexpand: true,
+    margin_start: 16, margin_end: 16,
+    margin_top: 8, margin_bottom: 0,
+  })
+  root.add(center)
+
+  // Top row: art + title/artist
   const topRow = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, spacing: 14, visible: true })
-  root.add(topRow)
+  center.add(topRow)
 
   const artImg = new Gtk.Image({ visible: true })
   artImg.get_style_context().add_class('npp-art')
   const updateArt = () => {
-    const cover: string = (player as any).coverArt ?? ''
-    const artUrl: string = (player as any).artUrl ?? ''
+    const cover: string  = (player as any).coverArt ?? ''
+    const artUrl: string = (player as any).artUrl   ?? ''
     const path = cover || (artUrl.startsWith('file://') ? decodeURIComponent(artUrl.slice(7)) : '')
     try {
       if (path) {
@@ -452,11 +491,11 @@ function buildNowPlayingContent(player: AstalMpris.Player): Gtk.Box {
   artistLbl.set_max_width_chars(26)
   infoBox.add(artistLbl)
 
-  root.add(new Gtk.Separator({ orientation: Gtk.Orientation.HORIZONTAL, visible: true }))
+  center.add(new Gtk.Separator({ orientation: Gtk.Orientation.HORIZONTAL, visible: true }))
 
-  // ── Seekable progress: pos ─── scale ─── dur ───────────
+  // Seekable progress
   const progRow = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, spacing: 10, visible: true })
-  root.add(progRow)
+  center.add(progRow)
 
   const posLbl = new Gtk.Label({ label: '0:00', visible: true })
   posLbl.get_style_context().add_class('npp-time')
@@ -465,9 +504,7 @@ function buildNowPlayingContent(player: AstalMpris.Player): Gtk.Box {
   const adj = new Gtk.Adjustment({ lower: 0, upper: 1, value: 0, step_increment: 0.01, page_increment: 0.1 })
   const progScale = new Gtk.Scale({
     orientation: Gtk.Orientation.HORIZONTAL,
-    adjustment: adj,
-    draw_value: false,
-    visible: true,
+    adjustment: adj, draw_value: false, visible: true,
   })
   progScale.get_style_context().add_class('npp-scale')
   progScale.set_hexpand(true)
@@ -477,18 +514,22 @@ function buildNowPlayingContent(player: AstalMpris.Player): Gtk.Box {
   durLbl.get_style_context().add_class('npp-time')
   progRow.add(durLbl)
 
-  // ── Spectrum visualizer (Cairo) ────────────────────────
+  // Spectrum visualizer
   const SPEC_COLORS: [number, number, number][] = [
-    [0x89/255, 0xB1/255, 0x9E/255],
-    [0x74/255, 0xA0/255, 0x8B/255],
-    [0x5F/255, 0x8E/255, 0x79/255],
-    [0x4D/255, 0x6B/255, 0x5C/255],
+    [0x89/255, 0xB1/255, 0x9E/255], [0x74/255, 0xA0/255, 0x8B/255],
+    [0x5F/255, 0x8E/255, 0x79/255], [0x4D/255, 0x6B/255, 0x5C/255],
     [0x33/255, 0x47/255, 0x3D/255],
   ]
+  // Spacer pushes spectrum to the bottom of the center column
+  const specSpacer = new Gtk.Box({ visible: true })
+  specSpacer.set_vexpand(true)
+  center.add(specSpacer)
+
   const specDA = new Gtk.DrawingArea({ visible: true })
   specDA.set_size_request(NUM_BARS * 8, 44)
   specDA.set_hexpand(true)
-  root.add(specDA)
+  specDA.set_margin_bottom(7)
+  center.pack_end(specDA, false, false, 0)
 
   specDA.connect('draw', (_w: any, cr: any) => {
     const dw   = specDA.get_allocated_width()
@@ -507,19 +548,31 @@ function buildNowPlayingContent(player: AstalMpris.Player): Gtk.Box {
     return false
   })
 
+  // ── Right panel ────────────────────────────────────────
+  const vsep2 = new Gtk.Separator({ orientation: Gtk.Orientation.VERTICAL, visible: true })
+  vsep2.get_style_context().add_class('npp-vsep')
+  root.add(vsep2)
+
+  const rightPanel = new Gtk.Box({
+    orientation: Gtk.Orientation.VERTICAL, spacing: 4, visible: true,
+    margin_start: 6, margin_end: 8, margin_top: 8, margin_bottom: 8,
+  })
+  buildRightPanel(rightPanel)
+  root.add(rightPanel)
+
   root.show_all()
 
   // ── Poll progress + spectrum ────────────────────────────
   const fmtSec = (s: number): string => {
-    const m = Math.floor(Math.max(0, s) / 60)
+    const m  = Math.floor(Math.max(0, s) / 60)
     const ss = Math.floor(Math.max(0, s) % 60)
     return `${m}:${String(ss).padStart(2, '0')}`
   }
 
-  let lastCover  = ''
-  let alive      = true
-  let isSeeking  = false
-  let curLen     = 0
+  let lastCover = ''
+  let alive     = true
+  let isSeeking = false
+  let curLen    = 0
 
   progScale.add_events(Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK)
   progScale.connect('button-press-event', () => { isSeeking = true; return false })
@@ -535,25 +588,28 @@ function buildNowPlayingContent(player: AstalMpris.Player): Gtk.Box {
     try {
       titleLbl.set_label(player.title  ?? '')
       artistLbl.set_label(player.artist ?? '')
-
       const curCover = (player as any).coverArt ?? (player as any).artUrl ?? ''
       if (curCover !== lastCover) { lastCover = curCover; updateArt() }
-
       const pos = player.position
       const len = player.length
       curLen = len
       posLbl.set_label(fmtSec(pos))
       durLbl.set_label(fmtSec(len))
       if (!isSeeking) adj.set_value(len > 0 ? Math.min(1, Math.max(0, pos / len)) : 0)
-
-      specDA.queue_draw()
     } catch (_) { alive = false; return GLib.SOURCE_REMOVE }
+    return GLib.SOURCE_CONTINUE
+  })
+
+  let specPollId: any = GLib.timeout_add(GLib.PRIORITY_DEFAULT, SPEC_INTERVAL, () => {
+    if (!alive) return GLib.SOURCE_REMOVE
+    specDA.queue_draw()
     return GLib.SOURCE_CONTINUE
   })
 
   root.connect('destroy', () => {
     alive = false
-    if (pollId != null) { GLib.source_remove(pollId); pollId = null }
+    if (pollId     != null) { GLib.source_remove(pollId);     pollId     = null }
+    if (specPollId != null) { GLib.source_remove(specPollId); specPollId = null }
   })
 
   return root
@@ -591,6 +647,14 @@ function LyricsViewer({ player, gdkmonitor }: { player: AstalMpris.Player, gdkmo
 
   const unsubTitle  = createBinding(player, 'title').subscribe(reload)
   const unsubArtist = createBinding(player, 'artist').subscribe(reload)
+  const unsubIndex  = subscribeIndexRebuild(reload)
+
+  // Immediate call for already-playing songs on AGS restart
+  reload()
+
+  // Delayed retries — cover the window where player metadata arrives late
+  const retryId1 = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 800,  () => { reload(); return GLib.SOURCE_REMOVE })
+  const retryId2 = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 2200, () => { reload(); return GLib.SOURCE_REMOVE })
 
   const pollId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
     if (lyricsFile && player.playbackStatus === AstalMpris.PlaybackStatus.PLAYING) {
@@ -607,7 +671,10 @@ function LyricsViewer({ player, gdkmonitor }: { player: AstalMpris.Player, gdkmo
   onCleanup(() => {
     unsubTitle()
     unsubArtist()
+    unsubIndex()
     GLib.source_remove(pollId)
+    GLib.source_remove(retryId1)
+    GLib.source_remove(retryId2)
   })
 
   const buildLyricsContent = (): Gtk.Box => {
@@ -731,6 +798,214 @@ function LyricsViewer({ player, gdkmonitor }: { player: AstalMpris.Player, gdkmo
 }
 
 // ============================================================
+//  ART CACHE
+// ============================================================
+const ART_CACHE_DIR = `${GLib.get_home_dir()}/.cache/ags/art`
+
+function cacheArtwork(sourcePath: string, title: string, artist: string): string {
+  if (!sourcePath || !GLib.file_test(sourcePath, GLib.FileTest.EXISTS)) return sourcePath
+  try {
+    GLib.mkdir_with_parents(ART_CACHE_DIR, 0o755)
+    const key  = `${title}|${artist}`.toLowerCase().replace(/[^a-z0-9|]/g, '_').slice(0, 80)
+    const ext  = sourcePath.split('.').pop() ?? 'png'
+    const dest = `${ART_CACHE_DIR}/${key}.${ext}`
+    if (!GLib.file_test(dest, GLib.FileTest.EXISTS)) {
+      Gio.File.new_for_path(sourcePath).copy(
+        Gio.File.new_for_path(dest),
+        Gio.FileCopyFlags.OVERWRITE, null, null
+      )
+    }
+    return dest
+  } catch (e) {
+    console.warn('[art-cache] copy failed:', e)
+    return sourcePath
+  }
+}
+
+// ============================================================
+//  SIDE PANEL HELPERS
+// ============================================================
+function fmtSecs(s: number): string {
+  const h  = Math.floor(s / 3600)
+  const m  = Math.floor((s % 3600) / 60)
+  const ss = Math.floor(s % 60)
+  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(ss).padStart(2, '0')}`
+  return `${m}:${String(ss).padStart(2, '0')}`
+}
+
+function fmtUrl(url: string): string {
+  if (!url) return ''
+  try {
+    const decoded = url.startsWith('file://') ? decodeURIComponent(url.slice(7)) : url
+    const parts   = decoded.replace(/\\/g, '/').split('/')
+    const name    = parts[parts.length - 1] || decoded
+    return name.length > 28 ? name.slice(0, 25) + '…' : name
+  } catch (_) { return url.slice(0, 28) }
+}
+
+function loadPanelArt(img: Gtk.Image, coverPath: string) {
+  const SIZE = 16
+  try {
+    if (coverPath && GLib.file_test(coverPath, GLib.FileTest.EXISTS)) {
+      const pb = GdkPixbuf.Pixbuf.new_from_file_at_scale(coverPath, SIZE, SIZE, true)
+      img.set_from_pixbuf(pb)
+      return
+    }
+  } catch (_) {}
+  img.set_pixel_size(SIZE)
+  img.set_from_icon_name('audio-x-generic-symbolic', Gtk.IconSize.MENU)
+}
+
+function buildTopListenedRow(entry: ListenEntry | null): Gtk.Box {
+  const row = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, spacing: 5, visible: true })
+  row.get_style_context().add_class('panel-row')
+
+  if (!entry) {
+    row.get_style_context().add_class('panel-row-empty')
+    row.set_halign(Gtk.Align.CENTER)
+    const lbl = new Gtk.Label({ label: '— No Data —', visible: true })
+    lbl.get_style_context().add_class('panel-no-data')
+    row.add(lbl)
+    return row
+  }
+
+  const artImg = new Gtk.Image({ visible: true })
+  artImg.get_style_context().add_class('panel-art')
+  artImg.set_valign(Gtk.Align.START)
+  loadPanelArt(artImg, entry.coverPath)
+  row.add(artImg)
+
+  const col = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL, spacing: 1, visible: true })
+  col.set_hexpand(true)
+  row.add(col)
+
+  const tLbl = new Gtk.Label({ label: entry.title || '—', visible: true, xalign: 0 })
+  tLbl.get_style_context().add_class('panel-song-title')
+  tLbl.set_ellipsize(3)
+  tLbl.set_max_width_chars(18)
+  col.add(tLbl)
+
+  const aLbl = new Gtk.Label({ label: entry.artist || '—', visible: true, xalign: 0 })
+  aLbl.get_style_context().add_class('panel-song-artist')
+  aLbl.set_ellipsize(3)
+  aLbl.set_max_width_chars(18)
+  col.add(aLbl)
+
+  const timeLbl = new Gtk.Label({
+    label: `${fmtSecs(entry.totalSeconds)}  ·  ${entry.completePlays}✓  ${entry.partialPlays}½`,
+    visible: true, xalign: 0,
+  })
+  timeLbl.get_style_context().add_class('panel-listen-time')
+  col.add(timeLbl)
+
+  return row
+}
+
+function buildRecentRow(entry: RecentEntry | null): Gtk.Widget {
+  if (!entry) {
+    const row = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, spacing: 5, visible: true })
+    row.get_style_context().add_class('panel-row')
+    row.get_style_context().add_class('panel-row-empty')
+    row.set_halign(Gtk.Align.CENTER)
+    const lbl = new Gtk.Label({ label: '— No Data —', visible: true })
+    lbl.get_style_context().add_class('panel-no-data')
+    row.add(lbl)
+    return row
+  }
+
+  // Transparent button wrapping the whole row — opens URL on click
+  const btn = new Gtk.Button({ visible: true })
+  btn.set_relief(Gtk.ReliefStyle.NONE)
+  btn.get_style_context().add_class('panel-row-btn')
+  if (!entry.url) btn.set_sensitive(false)
+
+  const row = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, spacing: 5, visible: true })
+  row.get_style_context().add_class('panel-row')
+  btn.add(row)
+
+  const artImg = new Gtk.Image({ visible: true })
+  artImg.get_style_context().add_class('panel-art')
+  artImg.set_valign(Gtk.Align.START)
+  loadPanelArt(artImg, entry.coverPath)
+  row.add(artImg)
+
+  const col = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL, spacing: 1, visible: true })
+  col.set_hexpand(true)
+  row.add(col)
+
+  const tLbl = new Gtk.Label({ label: entry.title || '—', visible: true, xalign: 0 })
+  tLbl.get_style_context().add_class('panel-song-title')
+  tLbl.set_ellipsize(3)
+  tLbl.set_max_width_chars(18)
+  col.add(tLbl)
+
+  const aLbl = new Gtk.Label({ label: entry.artist || '—', visible: true, xalign: 0 })
+  aLbl.get_style_context().add_class('panel-song-artist')
+  aLbl.set_ellipsize(3)
+  aLbl.set_max_width_chars(18)
+  col.add(aLbl)
+
+  if (entry.url) {
+    const uLbl = new Gtk.Label({ label: fmtUrl(entry.url), visible: true, xalign: 0 })
+    uLbl.get_style_context().add_class('panel-url')
+    uLbl.set_ellipsize(3)
+    uLbl.set_max_width_chars(22)
+    col.add(uLbl)
+    btn.connect('clicked', () => {
+      execAsync(['xdg-open', entry.url]).catch(() => {})
+    })
+  }
+
+  return btn
+}
+
+function buildLeftPanel(panel: any) {
+  panel.set_size_request(210, -1)
+  const hdr = new Gtk.Label({ label: 'TOP LISTENED', visible: true })
+  hdr.get_style_context().add_class('panel-header')
+  panel.add(hdr)
+  panel.add(new Gtk.Separator({ orientation: Gtk.Orientation.HORIZONTAL, visible: true }))
+
+  const list = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL, spacing: 3, visible: true })
+  panel.add(list)
+
+  const rebuild = () => {
+    list.get_children().forEach((c: any) => list.remove(c))
+    const entries = getTopListened(5)
+    for (let i = 0; i < 5; i++) list.add(buildTopListenedRow(entries[i] ?? null))
+    list.show_all()
+  }
+
+  rebuild()
+  const unsub = subscribeHistory(rebuild)
+  panel.connect('destroy', unsub)
+  panel.show_all()
+}
+
+function buildRightPanel(panel: any) {
+  panel.set_size_request(210, -1)
+  const hdr = new Gtk.Label({ label: 'RECENTLY PLAYED', visible: true })
+  hdr.get_style_context().add_class('panel-header')
+  panel.add(hdr)
+  panel.add(new Gtk.Separator({ orientation: Gtk.Orientation.HORIZONTAL, visible: true }))
+
+  const list = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL, spacing: 3, visible: true })
+  panel.add(list)
+
+  const rebuild = () => {
+    list.get_children().forEach((c: any) => list.remove(c))
+    const entries = getRecent(5)
+    for (let i = 0; i < 5; i++) list.add(buildRecentRow(entries[i] ?? null))
+    list.show_all()
+  }
+
+  rebuild()
+  const unsub = subscribeHistory(rebuild)
+  panel.connect('destroy', unsub)
+  panel.show_all()
+}
+
+// ============================================================
 //  MAIN MUSIC BAR
 //  centerbox is a direct child of bar-root (same pattern as Bar.tsx)
 //  so Astal.CenterBox gets the full window width for true centering
@@ -768,11 +1043,142 @@ export default function MusicBar(gdkmonitor: Gdk.Monitor) {
   GLib.timeout_add(GLib.PRIORITY_DEFAULT, 400,  () => { if (activePlayer() === null) refresh(); return GLib.SOURCE_REMOVE })
   GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1800, () => { if (activePlayer() === null) refresh(); return GLib.SOURCE_REMOVE })
 
+  // ── Listen tracking ─────────────────────────────────────────
+  // trackPlayedS  : seconds since last saveProgress (reset on each periodic save)
+  // trackSessionS : total seconds for current song (reset only on song change)
+  // trackIsMusic  : null=pending yt-dlp check, true=confirmed music, false=not music
+  let trackTitle     = ''
+  let trackArtist    = ''
+  let trackCoverPath = ''
+  let trackUrl       = ''     // canonical watch URL (YouTube) or empty
+  let trackYtId      = ''     // YouTube video ID, or empty for non-YouTube
+  let trackDuration  = 0
+  let trackPlayedS   = 0
+  let trackSessionS  = 0
+  let trackIsMusic: boolean | null = true
+
+  const captureTrackInfo = (player: AstalMpris.Player) => {
+    trackTitle     = player.title  ?? ''
+    trackArtist    = player.artist ?? ''
+    const rawCover = (player as any).coverArt ?? ''
+    trackCoverPath = rawCover ? cacheArtwork(rawCover, trackTitle, trackArtist) : ''
+    trackDuration  = player.length  ?? 0
+    trackPlayedS   = 0
+    trackSessionS  = 0
+
+    // Get the actual page URL (xesam:url) for source detection
+    let pageUrl = ''
+    try {
+      const uv = player.get_meta('xesam:url')
+      if (uv) pageUrl = String((uv as any).unpack?.() ?? '')
+    } catch (_) {}
+
+    // Extract YouTube video ID if this is a YouTube URL
+    const ytId = youtubeVideoId(pageUrl)
+    trackYtId  = ytId ?? ''
+    trackUrl   = ytId ? watchUrl(ytId) : pageUrl
+
+    if (!trackTitle) { trackIsMusic = false; return }
+
+    const settings      = loadSettings()
+    const filterEnabled = settings.ytdlpMusicFilter !== false
+
+    // Only filter YouTube content — SoundCloud/Spotify/etc. are music platforms, skip filter
+    if (filterEnabled && YTDLP_AVAILABLE && trackYtId) {
+      const ytWatchUrl = watchUrl(trackYtId)
+      // Check cache for instant decision (no async delay for known videos)
+      const cached = getCachedResult(ytWatchUrl)
+      if (cached !== null) {
+        trackIsMusic = cached
+        if (cached) saveProgress(trackTitle, trackArtist, trackCoverPath, trackUrl, 0)
+        return
+      }
+      // Not cached — pending async check; count seconds optimistically until resolved
+      trackIsMusic = null
+      const capturedTitle  = trackTitle
+      const capturedArtist = trackArtist
+      checkIsMusic(ytWatchUrl).then((isMusic: boolean) => {
+        if (trackTitle !== capturedTitle || trackArtist !== capturedArtist) return
+        trackIsMusic = isMusic
+        if (isMusic) saveProgress(trackTitle, trackArtist, trackCoverPath, trackUrl, 0)
+      })
+    } else {
+      // Non-YouTube source or filter disabled → always track
+      trackIsMusic = true
+      saveProgress(trackTitle, trackArtist, trackCoverPath, trackUrl, 0)
+    }
+  }
+
+  // Song-end: flush remaining seconds + completion detection
+  const flushTrack = () => {
+    if (trackTitle && trackIsMusic === true && trackSessionS >= 1) {
+      flushSession(trackTitle, trackArtist, trackCoverPath, trackUrl,
+        trackPlayedS, trackSessionS, trackDuration)
+    }
+    trackPlayedS  = 0
+    trackSessionS = 0
+  }
+
+  const trackTimerId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, () => {
+    const player = activePlayer()
+    // Count when playing; allow during pending check (null) so seconds aren't lost
+    if (player && player.playbackStatus === AstalMpris.PlaybackStatus.PLAYING
+        && trackIsMusic !== false) {
+      trackPlayedS++
+      trackSessionS++
+      const len = player.length
+      if (len > 0) trackDuration = len
+    }
+    return GLib.SOURCE_CONTINUE
+  })
+
+  // Periodic save — interval configurable via settings (default 30s)
+  const settings0     = loadSettings()
+  const saveIntervalS = Math.max(5, Math.min(300, Number(settings0.historyIntervalS) || 30))
+  const periodicSaveId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, saveIntervalS * 1000, () => {
+    if (trackTitle && trackIsMusic === true && trackPlayedS >= 1) {
+      saveProgress(trackTitle, trackArtist, trackCoverPath, trackUrl, trackPlayedS)
+      trackPlayedS = 0
+    }
+    return GLib.SOURCE_CONTINUE
+  })
+
+  createEffect(() => {
+    const player = activePlayer()
+    if (!player) {
+      flushTrack()
+      trackTitle = ''; trackArtist = ''; trackPlayedS = 0; trackSessionS = 0
+      return
+    }
+
+    const subTitle = createBinding(player, 'title').subscribe((newTitle: string) => {
+      const nt = newTitle ?? ''
+      if (nt && nt !== trackTitle) {
+        flushTrack()
+        captureTrackInfo(player)
+        trackTitle = nt
+      }
+    })
+    onCleanup(subTitle)
+
+    const title = player.title ?? ''
+    if (title && title !== trackTitle) {
+      flushTrack()
+      captureTrackInfo(player)
+    }
+  })
+
+  onCleanup(() => {
+    flushTrack()
+    GLib.source_remove(trackTimerId)
+    GLib.source_remove(periodicSaveId)
+  })
+
   // Spectrum state at component scope — refs filled by JSX $= callbacks below
   ensureCavaStarted()
   const specRefs: (any | null)[] = Array(NUM_BARS).fill(null)
   let specAlive = true
-  const specPollId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 40, () => {
+  const specPollId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, SPEC_INTERVAL, () => {
     if (!specAlive) return GLib.SOURCE_REMOVE
     for (let i = 0; i < NUM_BARS; i++) {
       const v = cavaData.bars[i] ?? 0
@@ -795,7 +1201,7 @@ export default function MusicBar(gdkmonitor: Gdk.Monitor) {
       {/* 3-pill layout: spectrum as JSX (AGS guarantees show), left/right via $= */}
       <box class="music-3pill-root" hexpand homogeneous={true}>
 
-        {/* LEFT PILL: player info — populated imperatively */}
+        {/* LEFT PILL: player info */}
         <box hexpand halign={Gtk.Align.START} valign={Gtk.Align.CENTER}>
         <box class="m-left-pill" spacing={8} valign={Gtk.Align.CENTER}
           $={(leftPill: any) => {
@@ -860,7 +1266,7 @@ export default function MusicBar(gdkmonitor: Gdk.Monitor) {
         </box>
         </box>
 
-        {/* RIGHT PILL: lyrics — populated imperatively */}
+        {/* RIGHT PILL: lyrics */}
         <box hexpand halign={Gtk.Align.END} valign={Gtk.Align.CENTER}>
         <box class="m-right-pill" spacing={4} valign={Gtk.Align.CENTER}
           $={(rightPill: any) => {

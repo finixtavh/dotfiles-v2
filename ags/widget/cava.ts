@@ -1,16 +1,46 @@
-// Shared CAVA singleton — single subprocess, shared buffer
-// Both MusicBar spectrum and Bar bottom-spectrum read cavaData.
-import { subprocess } from "ags/process"
+import { subprocess, execAsync } from "ags/process"
+import Gdk from "gi://Gdk"
+import GLib from "gi://GLib"
 
 export const NUM_BARS = 20
 export const cavaData = { bars: Array(NUM_BARS).fill(0) as number[] }
 
-const CAVA_PY = `
+const SETTINGS_FILE = `${GLib.get_home_dir()}/.config/ags/user-settings.json`
+
+function detectRefreshHz(): number {
+  try {
+    const mon = Gdk.Display.get_default()?.get_monitor(0)
+    if (mon) {
+      const mhz = (mon as any).get_refresh_rate?.()
+      if (mhz && mhz > 0) return Math.round(mhz / 1000)
+    }
+  } catch (_) {}
+  return 60
+}
+
+function loadSettings(): Record<string, any> {
+  try {
+    const [ok, raw] = GLib.file_get_contents(SETTINGS_FILE)
+    if (ok) return JSON.parse(new TextDecoder().decode(raw))
+  } catch (_) {}
+  return {}
+}
+
+export const GDK_HZ = detectRefreshHz()
+
+const _settings  = loadSettings()
+const _autoHz    = _settings.cavaAutoHz !== false
+const _manualHz  = typeof _settings.cavaManualHz === 'number' ? _settings.cavaManualHz : GDK_HZ
+
+export let REFRESH_HZ = _autoHz ? GDK_HZ : _manualHz
+
+function buildCavaPy(hz: number): string {
+  return `
 import sys, subprocess, tempfile, os, signal
 N=20
 conf="""[general]
 bars=20
-framerate=144
+framerate=${hz}
 sensitivity=200
 autosens=1
 lower_cutoff_freq=25
@@ -24,6 +54,7 @@ source=auto
 method=raw
 raw_target=/dev/stdout
 bit_format=8bit
+bar_delimiter = 0
 channels=mono
 
 [smoothing]
@@ -44,14 +75,16 @@ finally:
     try: os.unlink(cfg)
     except: pass
 `
+}
 
-let _started = false
-export function ensureCavaStarted() {
-  if (_started) return
-  _started = true
+let _proc: any     = null
+let _started       = false
+let _currentHz     = REFRESH_HZ
+
+function startCavaSubprocess(hz: number) {
   try {
-    subprocess(
-      ['python3', '-c', CAVA_PY],
+    _proc = subprocess(
+      ['python3', '-c', buildCavaPy(hz)],
       (line: string) => {
         const vals = line.trim().split(';').map(Number)
         for (let i = 0; i < NUM_BARS; i++) {
@@ -60,6 +93,24 @@ export function ensureCavaStarted() {
         }
       },
       () => {}
-    )
+    ) as any
   } catch (_) {}
+}
+
+export function ensureCavaStarted() {
+  if (_started) return
+  _started = true
+  startCavaSubprocess(_currentHz)
+}
+
+export function restartCavaWithHz(hz: number) {
+  REFRESH_HZ   = hz
+  _currentHz   = hz
+  try { execAsync(['pkill', '-x', 'cava']).catch(() => {}) } catch (_) {}
+  try { (_proc as any)?.force_exit?.() } catch (_) {}
+  _proc = null
+  GLib.timeout_add(GLib.PRIORITY_DEFAULT, 600, () => {
+    startCavaSubprocess(hz)
+    return GLib.SOURCE_REMOVE
+  })
 }

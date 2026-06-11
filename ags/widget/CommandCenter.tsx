@@ -53,6 +53,13 @@ const ACTIONS = [
     cmd:     'ags toggle -i ags-bar power-menu',
     isPower: true,
   },
+  {
+    icon:    '󰒓',
+    label:   'Settings',
+    desc:    'CAVA & bar config',
+    cmd:     'ags toggle -i ags-bar cava-settings',
+    isPower: false,
+  },
 ]
 
 export default function CommandCenter() {

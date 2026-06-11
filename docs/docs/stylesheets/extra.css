@@ -1,0 +1,62 @@
+/* ============================================================
+   Paleta del sistema — dotfiles-v2
+   $accent:       #89B19E
+   $primary:      #33473D
+   $secondary:    #4D6B5C
+   $bg-deep:      #050505
+   $bg-glass:     #121212
+   $text-primary: #E8E8E8
+   ============================================================ */
+
+:root {
+  --md-primary-fg-color:        #89B19E;
+  --md-primary-fg-color--light: #A8C9B9;
+  --md-primary-fg-color--dark:  #4D6B5C;
+
+  --md-accent-fg-color:         #89B19E;
+  --md-accent-fg-color--transparent: rgba(137,177,158,0.15);
+
+  --md-default-bg-color:        #0e0e0e;
+  --md-default-fg-color:        #E8E8E8;
+  --md-default-fg-color--light: #C8C8C8;
+  --md-default-fg-color--lighter: #7A7A7A;
+
+  --md-code-bg-color:           #1a1a1a;
+  --md-code-fg-color:           #C8C8C8;
+
+  --md-typeset-a-color:         #89B19E;
+}
+
+/* Header */
+.md-header {
+  background-color: #121212;
+  border-bottom: 1px solid #2A2A2A;
+}
+
+/* Nav tabs */
+.md-tabs {
+  background-color: #0e0e0e;
+  border-bottom: 1px solid #2A2A2A;
+}
+
+/* Sidebar */
+.md-nav__link--active,
+.md-nav__link:hover {
+  color: #89B19E !important;
+}
+
+/* Admonitions */
+.admonition.note  { border-color: #4D6B5C; }
+.admonition.tip   { border-color: #89B19E; }
+.admonition.warning { border-color: #8B6914; }
+
+/* Code blocks */
+.highlight code {
+  font-size: 0.85em;
+}
+
+/* TOC highlight */
+.md-nav__link--active {
+  font-weight: 600;
+  color: #89B19E !important;
+}

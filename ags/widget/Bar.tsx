@@ -367,6 +367,63 @@ function BluetoothWidget() {
 }
 
 // ============================================================
+//  BATTERY
+// ============================================================
+function BatteryWidget() {
+  const BAT_PATHS = [
+    '/sys/class/power_supply/BAT0',
+    '/sys/class/power_supply/BAT1',
+    '/sys/class/power_supply/BATT',
+  ]
+  const batPath = BAT_PATHS.find(p =>
+    GLib.file_test(`${p}/capacity`, GLib.FileTest.EXISTS)
+  ) ?? null
+
+  if (!batPath) return (<box />) as any
+
+  const [battIcon, setBattIcon] = createState('󰁹')
+  const [battText, setBattText] = createState('100%')
+  const [tooltip,  setTooltip]  = createState('Battery')
+
+  const readFile = (path: string): string => {
+    try {
+      const [ok, raw] = GLib.file_get_contents(path)
+      return ok ? new TextDecoder().decode(raw).trim() : ''
+    } catch (_) { return '' }
+  }
+
+  const update = () => {
+    const pct    = parseInt(readFile(`${batPath}/capacity`)) || 0
+    const status = readFile(`${batPath}/status`)
+    const ch     = status === 'Charging'
+    const full   = status === 'Full'
+    const ic     = (ch || full) ? '󰂄'
+                 : pct > 90 ? '󰁹'
+                 : pct > 70 ? '󰂁'
+                 : pct > 50 ? '󰁿'
+                 : pct > 30 ? '󰁾'
+                 : pct > 15 ? '󰁻'
+                 : '󰁺'
+    setBattIcon(ic)
+    setBattText(`${pct}%`)
+    setTooltip(ch ? `Battery: ${pct}% (Charging)` : full ? 'Battery: Full' : `Battery: ${pct}%`)
+  }
+
+  update()
+  const pollId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 30_000, () => { update(); return GLib.SOURCE_CONTINUE })
+  onCleanup(() => GLib.source_remove(pollId))
+
+  return (
+    <button class="sys-btn battery-btn" tooltip_text={tooltip}>
+      <box spacing={3}>
+        <label class="sys-icon" label={battIcon} />
+        <label class="batt-pct" label={battText} />
+      </box>
+    </button>
+  )
+}
+
+// ============================================================
 //  VPN
 // ============================================================
 function VpnWidget() {
@@ -539,6 +596,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
           <Sep />
           <NetworkWidget />
           <BluetoothWidget />
+          <BatteryWidget />
           <VpnWidget />
           <Sep />
           <NotifBell gdkmonitor={gdkmonitor} />

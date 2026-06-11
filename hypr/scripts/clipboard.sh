@@ -1,6 +1,6 @@
 #!/bin/bash
 # ── Clipboard History ──
-# Muestra el historial de cliphist en rofi
+# Shows cliphist history in rofi
 
 selected=$(cliphist list | rofi -dmenu -i -p "📋 Clipboard" -display-columns 2 -theme-str 'window { width: 600px; } listview { lines: 15; }')
 

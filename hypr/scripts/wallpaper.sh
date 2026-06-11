@@ -1,16 +1,16 @@
 #!/bin/bash
 # ── Wallpaper Selector ──
-# Detecta si el archivo es video o imagen y lanza awww o mpvpaper
+# Detects whether the file is a video or image and launches awww or mpvpaper
 
 WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
 CACHE="$HOME/.cache/current_wallpaper"
 mkdir -p "$WALLPAPER_DIR"
 
-# ── Patrones por tipo ──────────────────────────────────────────
+# ── File type patterns ─────────────────────────────────────────
 IMAGE_EXT='(jpg|jpeg|png|gif|webp|bmp|tiff)'
 VIDEO_EXT='(mp4|webm|mkv|avi|mov|gif)'
 
-# ── Selección con rofi (muestra todos los archivos soportados) ──
+# ── Select with rofi (shows all supported files) ───────────────
 selected=$(ls "$WALLPAPER_DIR" \
     | grep -iE "\.($IMAGE_EXT|$VIDEO_EXT)$" \
     | rofi -dmenu -i -p "󰸉 Wallpaper:")
@@ -19,7 +19,7 @@ selected=$(ls "$WALLPAPER_DIR" \
 
 FILE="$WALLPAPER_DIR/$selected"
 
-# ── Detectar tipo ──────────────────────────────────────────────
+# ── Detect file type ───────────────────────────────────────────
 EXT="${selected##*.}"
 EXT="${EXT,,}"  # lowercase
 
@@ -27,19 +27,18 @@ is_video() {
     echo "$EXT" | grep -qE "^(mp4|webm|mkv|avi|mov)$"
 }
 
-# ── Matar proceso anterior de wallpaper ───────────────────────
+# ── Kill previous wallpaper process ───────────────────────────
 pkill -x awww-daemon 2>/dev/null
 pkill -x mpvpaper    2>/dev/null
 sleep 0.3
 
-# ── Aplicar wallpaper ─────────────────────────────────────────
+# ── Apply wallpaper ────────────────────────────────────────────
 if is_video; then
-    # Iniciar daemon awww si está corriendo (para limpiar estado)
-    # mpvpaper toma el monitor, --loop para repetir, --mpv-options para sin audio
+    # Kill awww if running (to clear state), then launch mpvpaper
     mpvpaper -o "--no-audio --loop-file=inf --panscan=1.0" '*' "$FILE" &
     disown
 else
-    # Asegurar daemon awww activo
+    # Ensure awww daemon is running
     if ! pgrep -x awww-daemon > /dev/null; then
         awww-daemon --no-cache &
         sleep 0.5
@@ -51,6 +50,6 @@ else
         --transition-fps 60
 fi
 
-# Guardar ruta en cache (para que AGS/otros sepan cuál es el actual)
+# Save path to cache so AGS and other tools know the current wallpaper
 echo "$FILE" > "$CACHE"
-notify-send "Fondo Aplicado" "$selected" -a "Wallpaper" -t 2500
+notify-send "Wallpaper Applied" "$selected" -a "Wallpaper" -t 2500

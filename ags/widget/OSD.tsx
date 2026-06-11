@@ -130,7 +130,7 @@ export default function OSD(gdkmonitor: Gdk.Monitor) {
         const cur = readInt(capsPath) > 0
         if (cur !== prev) {
           prev = cur
-          show({ icon: cur ? '󰪛' : '󰪜', text: cur ? 'Bloq Mayús ON' : 'Bloq Mayús OFF',
+          show({ icon: cur ? '󰪛' : '󰪜', text: cur ? 'Caps Lock ON' : 'Caps Lock OFF',
                  pct: 0, noBar: true })
         }
         return GLib.SOURCE_CONTINUE

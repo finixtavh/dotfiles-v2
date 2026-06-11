@@ -380,8 +380,8 @@ progressbar.song-progress progress {
 }
 
 /* --- Spacers & Paddings --- */
-.bar-left  { padding-left:  4px; }
-.bar-right { padding-right: 4px; }
+.bar-left  { padding-left:  9px; }
+.bar-right { padding-right: 9px; }
 .divider-v {
   background:    $border;
   min-width:     1px;
@@ -587,7 +587,12 @@ popover > contents {
 
 /* --- Flyout now-playing: bigger sizing --- */
 .npp-root {
-  min-width: 320px;
+  min-width: 700px;
+}
+separator.npp-vsep {
+  min-width:  1px;
+  background: rgba(255, 255, 255, 0.12);
+  margin:     6px 0;
 }
 .npp-art {
   border-radius: 10px;
@@ -687,6 +692,16 @@ scale.npp-scale slider {
   font-size:  9px;
   color:      $text-secondary;
   min-width:  40px;
+}
+
+/* --- Battery widget --- */
+.battery-btn .sys-icon {
+  color: $purple-light;
+}
+.batt-pct {
+  font-size:   10px;
+  font-weight: 600;
+  color:       $text-primary;
 }
 
 /* --- VPN button --- */
@@ -967,4 +982,191 @@ window.NotifCenter {
   color:      $text-dim;
   font-style: italic;
   padding:    12px 0;
+}
+
+/* ============================================================
+   MUSIC BAR OUTER + SIDE PANELS
+   ============================================================ */
+.music-bar-outer {
+  min-height: 0;
+}
+
+.music-side-panel {
+  background:    rgba(18, 18, 18, 0.75);
+  border:        1px solid $border;
+  border-radius: $radius;
+  min-width:     210px;
+  padding:       4px 6px;
+  margin-top:    4px;
+  margin-bottom: 4px;
+}
+
+.panel-header {
+  font-size:   11px;
+  font-weight: 700;
+  color:       $accent;
+  letter-spacing: 1px;
+  padding:     2px 0;
+}
+
+.panel-row {
+  padding:       2px 0;
+  border-radius: 3px;
+}
+
+// Transparent clickable button wrapping each recently played row
+.panel-row-btn {
+  background:    transparent;
+  border-radius: 4px;
+  padding:       0;
+  box-shadow:    none;
+  border:        none;
+  min-height:    0;
+
+  &:hover .panel-row { background: $bg-item-hover; }
+  &:active .panel-row { background: $bg-active; }
+}
+
+.panel-row-empty {
+  min-height: 36px;
+}
+
+.panel-no-data {
+  font-size:  12px;
+  color:      $text-dim;
+  font-style: italic;
+}
+
+.panel-art {
+  min-width:  16px;
+  min-height: 16px;
+  border-radius: 2px;
+}
+
+.panel-song-title {
+  font-size:   13px;
+  font-weight: 600;
+  color:       $text-primary;
+}
+
+.panel-song-artist {
+  font-size: 12px;
+  color:     $text-secondary;
+}
+
+.panel-listen-time {
+  font-size: 11px;
+  color:     $accent;
+}
+
+.panel-url {
+  font-size: 11px;
+  color:     $text-dim;
+}
+
+/* ============================================================
+   SETTINGS PANEL
+   ============================================================ */
+window.SettingsPanel { background: transparent; }
+
+.settings-root {
+  background:    rgba(5, 5, 5, 0.97);
+  border:        1px solid $border-bright;
+  border-radius: $radius;
+  min-width:     540px;
+}
+
+.settings-title {
+  font-size:   15px;
+  font-weight: 700;
+  color:       $accent;
+}
+
+// Sidebar nav
+.settings-sidebar {
+  min-width:     110px;
+  padding:       4px 6px;
+  border-radius: $radius 0 0 $radius;
+}
+
+.settings-nav-btn {
+  background:    transparent;
+  border:        none;
+  border-radius: 6px;
+  padding:       7px 12px;
+  color:         $text-secondary;
+  font-size:     10px;
+  font-weight:   700;
+  letter-spacing: 1.2px;
+  transition:    100ms ease;
+  box-shadow:    none;
+
+  &:hover {
+    background: rgba(255,255,255,0.06);
+    color:      $text-primary;
+  }
+  &.active {
+    background: rgba(255,255,255,0.10);
+    color:      $accent;
+  }
+}
+
+// Page content
+.settings-page {
+  min-width: 320px;
+}
+
+.settings-section {
+  font-size:      10px;
+  font-weight:    700;
+  color:          $text-secondary;
+  letter-spacing: 1px;
+  padding-top:    4px;
+}
+
+.settings-label {
+  font-size: 12px;
+  color:     $text-primary;
+}
+
+.settings-hint {
+  font-size: 10px;
+  color:     $text-dim;
+}
+
+.settings-clear-btn {
+  background:    rgba(255,255,255,0.05);
+  border:        1px solid rgba(255,255,255,0.12);
+  border-radius: $radius;
+  padding:       5px 12px;
+  color:         $text-secondary;
+  font-size:     11px;
+  transition:    150ms ease;
+
+  &:hover {
+    background:   rgba(255,255,255,0.10);
+    border-color: rgba(255,255,255,0.22);
+    color:        $text-primary;
+  }
+
+  &.settings-danger-armed {
+    background:   rgba(243, 139, 168, 0.15);
+    border-color: #f38ba8;
+    color:        #f38ba8;
+  }
+}
+
+.settings-apply-btn {
+  background:    $bg-active;
+  border:        1px solid $border-bright;
+  border-radius: $radius;
+  padding:       6px 16px;
+  color:         $text-primary;
+  font-size:     12px;
+  transition:    150ms ease;
+}
+.settings-apply-btn:hover {
+  background:   $bg-item-hover;
+  border-color: $accent;
+  color:        $accent;
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 # ── Wallpaper Init ──
-# Al inicio de sesión: restaura el último wallpaper desde cache
+# On session start: restore the last wallpaper from cache
 
 CACHE="$HOME/.cache/current_wallpaper"
 WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
@@ -8,21 +8,21 @@ IMAGE_EXT='(jpg|jpeg|png|gif|webp|bmp|tiff)'
 VIDEO_EXT='(mp4|webm|mkv|avi|mov)'
 mkdir -p "$WALLPAPER_DIR"
 
-# Obtener archivo del cache, o buscar el primero disponible
+# Read file from cache, or find the first available one
 if [[ -f "$CACHE" ]]; then
     FILE=$(cat "$CACHE" | tr -d '[:space:]')
-    # Verificar que aún existe
+    # Verify it still exists
     [[ ! -f "$FILE" ]] && FILE=""
 fi
 
-# Fallback: primer archivo que encuentre
+# Fallback: first file found
 if [[ -z "$FILE" ]]; then
     FILE=$(find "$WALLPAPER_DIR" -maxdepth 1 \
         -iregex ".*\.\($IMAGE_EXT\|\$VIDEO_EXT\)" \
         | head -1)
 fi
 
-[[ -z "$FILE" ]] && exit 0  # Sin wallpapers, nada que hacer
+[[ -z "$FILE" ]] && exit 0  # No wallpapers, nothing to do
 
 EXT="${FILE##*.}"
 EXT="${EXT,,}"
@@ -31,7 +31,7 @@ is_video() {
     echo "$EXT" | grep -qE "^(mp4|webm|mkv|avi|mov)$"
 }
 
-# Matar cualquier proceso previo (arranque limpio)
+# Kill any previous wallpaper process (clean start)
 pkill -x awww-daemon 2>/dev/null
 pkill -x mpvpaper    2>/dev/null
 sleep 0.2

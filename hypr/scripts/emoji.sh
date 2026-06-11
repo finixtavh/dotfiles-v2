@@ -1,10 +1,10 @@
 #!/bin/bash
 # ── Emoji Picker ──
-# Usa rofi para seleccionar un emoji y copiarlo al clipboard
+# Uses rofi to select an emoji and copy it to the clipboard
 
 EMOJI_FILE="$HOME/.config/hypr/scripts/emojis.txt"
 
-# Generar archivo de emojis si no existe
+# Generate emoji file if it doesn't exist
 if [[ ! -f "$EMOJI_FILE" ]]; then
     cat > "$EMOJI_FILE" << 'EMOJIS'
 😀 Grinning Face
@@ -183,5 +183,5 @@ selected=$(cat "$EMOJI_FILE" | rofi -dmenu -i -p "😀 Emoji" -theme-str 'window
 if [[ -n "$selected" ]]; then
     emoji=$(echo "$selected" | cut -d' ' -f1)
     echo -n "$emoji" | wl-copy
-    notify-send "😀 Emoji" "Copiado: $emoji" -a "Emoji Picker" -t 2000
+    notify-send "😀 Emoji" "Copied: $emoji" -a "Emoji Picker" -t 2000
 fi
