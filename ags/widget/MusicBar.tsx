@@ -482,13 +482,13 @@ function buildNowPlayingContent(player: AstalMpris.Player): Gtk.Box {
   const titleLbl = new Gtk.Label({ visible: true, xalign: 0 })
   titleLbl.get_style_context().add_class('npp-title')
   titleLbl.set_ellipsize(3)
-  titleLbl.set_max_width_chars(26)
+  titleLbl.set_max_width_chars(32)
   infoBox.add(titleLbl)
 
   const artistLbl = new Gtk.Label({ visible: true, xalign: 0 })
   artistLbl.get_style_context().add_class('npp-artist')
   artistLbl.set_ellipsize(3)
-  artistLbl.set_max_width_chars(26)
+  artistLbl.set_max_width_chars(32)
   infoBox.add(artistLbl)
 
   center.add(new Gtk.Separator({ orientation: Gtk.Orientation.HORIZONTAL, visible: true }))
@@ -960,7 +960,7 @@ function buildRecentRow(entry: RecentEntry | null): Gtk.Widget {
 }
 
 function buildLeftPanel(panel: any) {
-  panel.set_size_request(210, -1)
+  panel.set_size_request(260, -1)
   const hdr = new Gtk.Label({ label: 'TOP LISTENED', visible: true })
   hdr.get_style_context().add_class('panel-header')
   panel.add(hdr)
@@ -983,7 +983,7 @@ function buildLeftPanel(panel: any) {
 }
 
 function buildRightPanel(panel: any) {
-  panel.set_size_request(210, -1)
+  panel.set_size_request(260, -1)
   const hdr = new Gtk.Label({ label: 'RECENTLY PLAYED', visible: true })
   hdr.get_style_context().add_class('panel-header')
   panel.add(hdr)

@@ -1,4 +1,5 @@
 {
   "cavaAutoHz": true,
-  "cavaManualHz": 144
+  "cavaManualHz": 144,
+  "historyIntervalS": 10
 }
