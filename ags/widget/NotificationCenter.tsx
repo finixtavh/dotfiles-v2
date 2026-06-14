@@ -5,6 +5,22 @@ import AstalNotifd from "gi://AstalNotifd"
 import GdkPixbuf from "gi://GdkPixbuf"
 import { createState, createEffect, onCleanup } from "ags"
 
+const notifd = AstalNotifd.get_default()
+
+let _dndEnabled: boolean = false
+try { _dndEnabled = !!(notifd as any).dontDisturb } catch (_) {}
+const _dndSubs: Set<() => void> = new Set()
+
+export function isDndEnabled(): boolean { return _dndEnabled }
+export function subscribeDnd(cb: () => void): () => void {
+  _dndSubs.add(cb); return () => _dndSubs.delete(cb)
+}
+function _applyDnd(val: boolean) {
+  _dndEnabled = val
+  try { (notifd as any).dontDisturb = val } catch (_) {}
+  _dndSubs.forEach(cb => { try { cb() } catch (_) {} })
+}
+
 const _togglers = new Map<Gdk.Monitor, () => void>()
 export function toggleNotifCenter(monitor: Gdk.Monitor) {
   _togglers.get(monitor)?.()
@@ -118,7 +134,6 @@ export default function NotificationCenter(gdkmonitor: Gdk.Monitor) {
   let win: Astal.Window
   const { TOP, RIGHT } = Astal.WindowAnchor
 
-  const notifd = AstalNotifd.get_default()
   const [notifs, setNotifs] = createState<any[]>([])
 
   const refresh = () => {
@@ -157,20 +172,20 @@ export default function NotificationCenter(gdkmonitor: Gdk.Monitor) {
     >
       <box class="notif-panel" orientation={Gtk.Orientation.VERTICAL} spacing={0}
         $={(self: any) => {
-          // Header
-          const header = new Gtk.Box({
-            orientation: Gtk.Orientation.HORIZONTAL, spacing: 8,
+          // Header (title+clear row, then DND row)
+          const headerOuter = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL, spacing: 6,
             visible: true, margin_start: 14, margin_end: 14,
             margin_top: 12, margin_bottom: 8,
           })
+
+          const titleRow = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, spacing: 8, visible: true })
           const titleLbl = new Gtk.Label({ label: '󰂚  Notifications', visible: true, xalign: 0, hexpand: true })
           titleLbl.get_style_context().add_class('notif-panel-title')
-          header.add(titleLbl)
-
+          titleRow.add(titleLbl)
           const clearBtn = new Gtk.Button({ visible: true })
           clearBtn.get_style_context().add_class('notif-clear-btn')
-          const clearLbl = new Gtk.Label({ label: '󰃢  Clear', visible: true })
-          clearBtn.add(clearLbl)
+          clearBtn.add(new Gtk.Label({ label: '󰃢  Clear', visible: true }))
           clearBtn.connect('clicked', () => {
             try {
               notifd.get_notifications?.()?.forEach((n: any) => {
@@ -179,8 +194,23 @@ export default function NotificationCenter(gdkmonitor: Gdk.Monitor) {
             } catch (_) {}
             refresh()
           })
-          header.add(clearBtn)
-          self.add(header)
+          titleRow.add(clearBtn)
+          headerOuter.add(titleRow)
+
+          const dndRow = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, spacing: 8, visible: true })
+          const dndLbl = new Gtk.Label({ label: '󰂛  Do Not Disturb', visible: true, xalign: 0, hexpand: true })
+          dndLbl.get_style_context().add_class('notif-dnd-label')
+          dndRow.add(dndLbl)
+          const dndSwitch = new Gtk.Switch({ visible: true })
+          dndSwitch.set_active(_dndEnabled)
+          dndSwitch.connect('state-set', (_sw: any, state: boolean) => {
+            _applyDnd(state)
+            return false
+          })
+          dndRow.add(dndSwitch)
+          headerOuter.add(dndRow)
+
+          self.add(headerOuter)
 
           const sep = new Gtk.Separator({ orientation: Gtk.Orientation.HORIZONTAL, visible: true })
           self.add(sep)

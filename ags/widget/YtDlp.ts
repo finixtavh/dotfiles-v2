@@ -27,7 +27,8 @@ function _saveCache() {
     GLib.mkdir_with_parents(dir, 0o755)
     const obj: Record<string, CacheEntry> = {}
     for (const [k, v] of _cache) obj[k] = v
-    GLib.file_set_contents(CACHE_FILE, JSON.stringify(obj))
+    const bytes = new TextEncoder().encode(JSON.stringify(obj))
+    Gio.File.new_for_path(CACHE_FILE).replace_contents(bytes, null, false, Gio.FileCreateFlags.REPLACE_DESTINATION, null)
   } catch (_) {}
 }
 

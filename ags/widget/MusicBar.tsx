@@ -330,50 +330,6 @@ function MediaControls({ player }: { player: AstalMpris.Player }) {
   )
 }
 
-// ============================================================
-//  PROGRESS BAR (music bar strip)
-// ============================================================
-function ProgressBar({ player }: { player: AstalMpris.Player }) {
-  return (
-    <box class="progress-bar-container" valign={Gtk.Align.CENTER} hexpand
-      $={(self: any) => {
-        const adj = new Gtk.Adjustment({ lower: 0, upper: 1, value: 0, step_increment: 0.01, page_increment: 0.1 })
-        const scale = new Gtk.Scale({
-          orientation: Gtk.Orientation.HORIZONTAL,
-          adjustment: adj,
-          draw_value: false,
-          visible: true,
-        })
-        scale.get_style_context().add_class('song-seek-scale')
-        scale.set_hexpand(true)
-        self.add(scale)
-
-        let isSeeking = false
-        let curLen = 0
-
-        scale.add_events(Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK)
-        scale.connect('button-press-event', () => { isSeeking = true; return false })
-        scale.connect('button-release-event', () => {
-          isSeeking = false
-          const target = adj.get_value() * curLen
-          if (curLen > 0) execAsync(['playerctl', 'position', target.toFixed(3)]).catch(() => {})
-          return false
-        })
-
-        const pollId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 250, () => {
-          try {
-            const pos = player.position
-            const len = player.length
-            curLen = len
-            if (!isSeeking) adj.set_value(len > 0 ? Math.min(1, Math.max(0, pos / len)) : 0)
-          } catch (_) {}
-          return GLib.SOURCE_CONTINUE
-        })
-        onCleanup(() => GLib.source_remove(pollId))
-      }}
-    />
-  )
-}
 
 // ============================================================
 //  FLYOUT WINDOW — OVERLAY layer-shell (not Gtk.Popover)

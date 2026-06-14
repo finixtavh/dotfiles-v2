@@ -1,4 +1,106 @@
 {
-  "listened": {},
-  "recent": []
+  "listened": {
+    "kyrie eleison.|quilt heron": {
+      "title": "Kyrie Eleison.",
+      "artist": "quilt heron",
+      "coverPath": "",
+      "totalSeconds": 167,
+      "completePlays": 0,
+      "partialPlays": 0
+    },
+    "the fire rises (almost) all superevents|datoggy": {
+      "title": "The Fire Rises (Almost) All Superevents",
+      "artist": "Datoggy",
+      "coverPath": "",
+      "totalSeconds": 18,
+      "completePlays": 0,
+      "partialPlays": 0
+    },
+    "youtube|": {
+      "title": "YouTube",
+      "artist": "",
+      "coverPath": "",
+      "totalSeconds": 209,
+      "completePlays": 0,
+      "partialPlays": 0
+    },
+    "el pastor alucín volvió 🔥|foco streams": {
+      "title": "El Pastor Alucín Volvió 🔥",
+      "artist": "Foco Streams",
+      "coverPath": "",
+      "totalSeconds": 1199,
+      "completePlays": 0,
+      "partialPlays": 1
+    },
+    "...before becoming an adult w/@xxkoyukixx,@ralker de 湯煎白雪|": {
+      "title": "...before becoming an adult w/@XxKOYUKIxX,@ralker de 湯煎白雪",
+      "artist": "",
+      "coverPath": "",
+      "totalSeconds": 374,
+      "completePlays": 0,
+      "partialPlays": 0
+    },
+    "rejection feat. such - signal (7_7 bootleg)|7_7": {
+      "title": "Rejection feat. such - Signal (7_7 bootleg)",
+      "artist": "7_7",
+      "coverPath": "/home/fn-finixtavh/.cache/ags/art/rejection_feat__such___signal__7_7_bootleg_|7_7.png",
+      "totalSeconds": 49,
+      "completePlays": 0,
+      "partialPlays": 0
+    },
+    "hadean|sydosys": {
+      "title": "Hadean",
+      "artist": "Sydosys",
+      "coverPath": "/home/fn-finixtavh/.cache/ags/art/hadean|sydosys.png",
+      "totalSeconds": 379,
+      "completePlays": 0,
+      "partialPlays": 0
+    },
+    "gardens & sad keyboard guy - fractured light ft. eili|gardens": {
+      "title": "Gardens & Sad Keyboard Guy - Fractured Light ft. eili",
+      "artist": "Gardens",
+      "coverPath": "/home/fn-finixtavh/.cache/ags/art/gardens___sad_keyboard_guy___fractured_light_ft__eili|gardens.png",
+      "totalSeconds": 179,
+      "completePlays": 0,
+      "partialPlays": 0
+    },
+    "flechette|awfuless": {
+      "title": "Flechette",
+      "artist": "awfuless",
+      "coverPath": "/home/fn-finixtavh/.cache/ags/art/flechette|awfuless.png",
+      "totalSeconds": 19,
+      "completePlays": 0,
+      "partialPlays": 0
+    }
+  },
+  "recent": [
+    {
+      "title": "...before becoming an adult w/@XxKOYUKIxX,@ralker de 湯煎白雪",
+      "artist": "",
+      "coverPath": "/home/fn-finixtavh/.cache/ags/art/flechette|awfuless.png",
+      "url": "https://soundcloud.com/you/likes",
+      "playedAt": 1781326774188
+    },
+    {
+      "title": "El Pastor Alucín Volvió 🔥",
+      "artist": "Foco Streams",
+      "coverPath": "",
+      "url": "https://www.youtube.com/watch?v=6TIXF3p8DFA",
+      "playedAt": 1781325732348
+    },
+    {
+      "title": "The Fire Rises (Almost) All Superevents",
+      "artist": "Datoggy",
+      "coverPath": "",
+      "url": "https://www.youtube.com/",
+      "playedAt": 1781281517893
+    },
+    {
+      "title": "Kyrie Eleison.",
+      "artist": "quilt heron",
+      "coverPath": "",
+      "url": "https://www.youtube.com/watch?v=RwNkoJivV-Y",
+      "playedAt": 1781281420082
+    }
+  ]
 }
